@@ -1,2 +1,7 @@
 #!/bin/bash
-exit 127
+set -e
+
+echo "Cleaning build artifacts..."
+flutter clean
+
+echo "Clean complete"
