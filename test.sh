@@ -1,2 +1,11 @@
 #!/bin/bash
-exit 127
+set -e
+
+if find lib test -name '*.dart' | grep .; then 
+    echo "Flutter files found"
+    echo "Running all flutter tests designated in test/ directory..."
+    flutter test
+    echo "Tests complete."
+else 
+    echo "No Flutter files found, skipping flutter tests."
+fi
