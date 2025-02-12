@@ -8,7 +8,7 @@ on:
 
 jobs:
   main:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Clone repository
@@ -25,5 +25,5 @@ jobs:
       - name: Run custom tests
         run: bash ./test.sh
 
-      - name: Clean tests
+      - name: Clean build
         run: bash ./clean.sh
