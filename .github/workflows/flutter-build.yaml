@@ -20,17 +20,17 @@ jobs:
           channel: stable
 
       - name: Set Execution Policy for PowerShell
-        run: Set-ExecutionPolicy Unrestricted -Scope Process -Force
         shell: pwsh
+        run: Set-ExecutionPolicy Unrestricted -Scope Process -Force
 
       - name: Run custom build script
-        run: bash .\build.ps1
         shell: pwsh
+        run: .\build.ps1
 
       - name: Run custom tests
-        run: bash .\test.ps1
         shell: pwsh
+        run: .\test.ps1
 
       - name: Clean build
-        run: bash .\clean.ps1
         shell: pwsh
+        run: .\clean.ps1
