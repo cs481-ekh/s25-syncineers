@@ -32,6 +32,11 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       // You can now use _currentUser to access user details.
     } catch (error) {
       print('Sign in failed: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Sign in failed: $error'),
+        ),
+      );
     }
   }
   Future<void> _handleSignOut() => _googleSignIn.disconnect();
@@ -53,7 +58,10 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       );
     } else {
       return ElevatedButton(
-        onPressed: _handleSignIn,
+        onPressed: (
+          _handleSignIn
+
+          ),
         child: Text('Sign in with Google'),
       );
     }
