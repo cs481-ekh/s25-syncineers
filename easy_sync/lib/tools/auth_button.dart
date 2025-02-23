@@ -51,7 +51,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       return Column(
         children: [
           ListTile(
-            leading: GoogleUserCircleAvatar(identity: _currentUser!),
+           // leading: GoogleUserCircleAvatar(identity: _currentUser!),
             title: Text(_currentUser!.displayName ?? ''),
             subtitle: Text(_currentUser!.email),
           ),
