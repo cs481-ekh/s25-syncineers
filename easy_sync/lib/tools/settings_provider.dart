@@ -27,7 +27,15 @@ class SharedPreferencesManager {
     prefs.setString(serverAuthCodeKey, data.serverAuthCode ?? '');
   }
 
-  //make a clear user method
+  Future<void> clearUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(displayNameKey);
+    prefs.remove(emailKey);
+    prefs.remove(idKey);
+    prefs.remove(photoUrlKey);
+    prefs.remove(serverAuthCodeKey);
+  }
+
 
   Future<void> setUserCalendarSets(data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

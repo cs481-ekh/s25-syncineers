@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           Text('login Page'),
           GoogleSignInButton(),
-          Text('$_email'),
+          Text(_email),
         ],
       ),
     );

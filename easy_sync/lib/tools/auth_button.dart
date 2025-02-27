@@ -51,7 +51,12 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       );
     }
   }
-  Future<void> _handleSignOut() => _googleSignIn.disconnect();
+  Future<void> _handleSignOut() async {
+    await _googleSignIn.disconnect();
+    await _prefs.clearUser();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     if (_currentUser != null) {
