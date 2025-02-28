@@ -5,6 +5,7 @@ import 'package:googleapis_auth/googleapis_auth.dart' as auth;
 import 'package:http/http.dart' as http;
 import 'package:http/src/client.dart';
 import 'calendar_tools.dart';
+import 'settings_provider.dart';
 
 
 class GoogleSignInButton extends StatefulWidget {
@@ -14,6 +15,9 @@ class GoogleSignInButton extends StatefulWidget {
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
 }
 class _GoogleSignInButtonState extends State<GoogleSignInButton> {
+
+  final SharedPreferencesManager _prefs = SharedPreferencesManager();
+
   GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: [
       'https://www.googleapis.com/auth/calendar',
@@ -27,6 +31,8 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
       setState(() {
         _currentUser = account;
+        print('Current user: $_currentUser');
+        _prefs.setUser(_currentUser);
       });
     });
     // Attempt to sign in silently upon app start.
@@ -45,7 +51,12 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       );
     }
   }
-  Future<void> _handleSignOut() => _googleSignIn.disconnect();
+  Future<void> _handleSignOut() async {
+    await _googleSignIn.disconnect();
+    await _prefs.clearUser();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     if (_currentUser != null) {
@@ -57,7 +68,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
             subtitle: Text(_currentUser!.email),
           ),
           ElevatedButton(
-            onPressed: _handleSignOut,
+            onPressed: _handleSignOut, //need to update shared prefs 
             child: Text('Sign Out'),
           ),
           ElevatedButton(
