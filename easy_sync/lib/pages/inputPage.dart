@@ -1,4 +1,7 @@
 
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
@@ -9,6 +12,7 @@ class InputPage extends StatefulWidget {
 
 class _InputPageState extends State<InputPage> {
   String? filePath;
+  String? fileContents;
 
   void getFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -20,6 +24,11 @@ class _InputPageState extends State<InputPage> {
       setState(() {
         filePath = result.files.single.path!;
       });
+      if (result.files.single.bytes != null) {
+        String contents = utf8.decode(result.files.single.bytes!);
+        print(contents);
+        fileContents = contents;
+      }
     }
   }
 
