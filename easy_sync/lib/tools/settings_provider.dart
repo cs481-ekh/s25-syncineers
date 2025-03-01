@@ -14,7 +14,7 @@ class SharedPreferencesManager {
 
   String calendarListKey = 'calendarList';
 
-  
+  String selectedCalKey = 'selectedCal';
 
   //WRITE TO PREFERENCES
 
@@ -36,12 +36,22 @@ class SharedPreferencesManager {
     prefs.remove(serverAuthCodeKey);
   }
 
-
+  //maybe change to a map? for claendar set summary and id
   Future<void> setUserCalendarSets(data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    print("DATA: $data");
+    print("TYPE: ${data.runtimeType}");
+
     prefs.setStringList(calendarListKey, data);
+
+    print("KEY PRINT: $calendarListKey");
   }
 
+  Future<void> setSelectedCal(data) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(selectedCalKey, data);
+  }
 
   //READ FROM PREFERENCES
 
@@ -50,10 +60,15 @@ class SharedPreferencesManager {
     return prefs.getString(emailKey) ?? '';
   }
 
-  Future<String> getCalendarList() async {
+//changed from object to string?
+  Future<Object> getCalendarList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(calendarListKey) ?? '';
+    return prefs.getStringList(calendarListKey) ?? '';
   }
 
+  Future<String> getSelectedCal() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(selectedCalKey) ?? '';
+  }
 
 }
