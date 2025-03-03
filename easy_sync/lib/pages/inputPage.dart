@@ -1,10 +1,8 @@
 
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
 
 class InputPage extends StatefulWidget {
   _InputPageState createState() => _InputPageState();
@@ -40,16 +38,30 @@ class _InputPageState extends State<InputPage> {
           onPressed: getFile, 
           icon: const Icon(Icons.file_open, color: Colors.blue, size: 100.0),
         ),
-        const SizedBox(height: 20,),
-        if (filePath != null)
-          Text(
-            'Selected file:\n${filePath!}',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.blue
-            ),
+        SizedBox(
+          height: 250,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'File Contents:\n',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 14),
+              ),
+              const SizedBox(height: 5),
+              Expanded( // Ensures SingleChildScrollView takes available space
+                child: Container(
+                  child: SingleChildScrollView(
+                    child: Text(
+                      fileContents ?? 'No File Selected',
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ),
+                ),
+              )
+            ],
           )
+        ),
       ],
     );
   }
