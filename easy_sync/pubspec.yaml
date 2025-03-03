@@ -12,6 +12,9 @@ dependencies:
   googleapis: ^11.4.0
   googleapis_auth: ^1.2.0
   google_sign_in: ^6.2.1
+  file_picker: ^9.0.0
+  http: ^1.3.0
+  shared_preferences: ^2.5.2
 
 dev_dependencies:
   flutter_test:
