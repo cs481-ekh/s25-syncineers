@@ -18,7 +18,7 @@ class MainApp extends StatelessWidget {
       routes: {
         '/': (context) => const Frame(title: 'login', child: LoginPage()),
         '/input': (context) =>  Frame(title: 'input', child: InputPage()),
-        '/edit': (context) => const Frame(title: 'edit', child: EditPage()),
+        '/edit': (context) => const Frame(title: 'edit', child: EditPage([[]])),
       }
     );
   }

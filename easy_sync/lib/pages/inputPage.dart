@@ -1,6 +1,8 @@
 
 import 'dart:convert';
 
+import 'package:easy_sync/pages/editPage.dart';
+import 'package:easy_sync/tools/frame.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +12,8 @@ class InputPage extends StatefulWidget {
 
 class _InputPageState extends State<InputPage> {
   String? filePath;
-  String? fileContents;
+  List<List<String>> rows = [[]];
+  List<String> columnNames = [];
 
   void getFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -24,10 +27,16 @@ class _InputPageState extends State<InputPage> {
       });
       if (result.files.single.bytes != null) {
         String contents = utf8.decode(result.files.single.bytes!);
-        print(contents);
-        fileContents = contents;
+        rows = parseCSV(contents);
       }
     }
+  }
+
+  List<List<String>> parseCSV(String fileContents) {
+    List<List<String>> rows = fileContents.trim().split('\n').map((line) => line.split(',')).toList();
+    columnNames = rows[0];
+    print("\n$columnNames");
+    return rows;
   }
 
   Widget build(BuildContext context) {
@@ -49,15 +58,21 @@ class _InputPageState extends State<InputPage> {
                 style: TextStyle(fontSize: 14),
               ),
               const SizedBox(height: 5),
-              Expanded( // Ensures SingleChildScrollView takes available space
-                child: Container(
+              if (rows.isNotEmpty)
+              Container(
                   child: SingleChildScrollView(
                     child: Text(
-                      fileContents ?? 'No File Selected',
+                      rows[0].toString(),
                       style: const TextStyle(fontSize: 14),
                     ),
                   ),
                 ),
+            
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Frame(title: 'edit', child: EditPage(rows))));
+                }, 
+                child: const Text("Edit data")
               )
             ],
           )

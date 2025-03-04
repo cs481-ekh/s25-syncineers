@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class EditPage extends StatefulWidget {
  
 
-  const EditPage({super.key});
+  const EditPage(List<List<String>> rows, {super.key});
 
   @override
   _EditPageState createState() => _EditPageState();
