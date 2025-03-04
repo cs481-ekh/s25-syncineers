@@ -71,6 +71,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
             onPressed: _handleSignOut, //need to update shared prefs 
             child: Text('Sign Out'),
           ),
+          //eventually move this out of auth button into signin page
           ElevatedButton(
             onPressed: () async {
               if(_currentUser != null) {

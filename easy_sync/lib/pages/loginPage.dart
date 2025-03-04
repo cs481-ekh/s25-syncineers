@@ -18,6 +18,8 @@ class _LoginPageState extends State<LoginPage> {
   
   //store local value for shared preferences
   String _email = ''; 
+  String _cal = '';
+  List<String> _calList = [];
 
   @override
   void initState() {
@@ -29,9 +31,13 @@ class _LoginPageState extends State<LoginPage> {
   void _loadSettings() async {
 
     final email = await _prefs.getEmailKey();
+    final calendar = await _prefs.getSelectedCal();
+    final calendarList = await _prefs.getCalendarList();
 
     setState(() {
       _email = email;
+      _cal = calendar;
+      _calList = calendarList as List<String>;
     });
   }
 
@@ -42,7 +48,22 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           Text('login Page'),
           GoogleSignInButton(),
-          Text(_email),
+          Text("Current Email: $_email"),
+          Text("Current Calendar: $_cal"),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _calList.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(_calList[index]),
+                  onTap: () {
+                    _prefs.setSelectedCal(_calList[index]);
+                    _loadSettings();
+                  },
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
