@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _email = email;
       _cal = calendar;
-      _calList = calendarList as List<String>;
+      _calList = List<String>.from(calendarList as Iterable<dynamic>);
     });
   }
 

@@ -83,6 +83,17 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
             },
             child: const Text('Get Calendar List'),
           ),
+          ElevatedButton(
+            onPressed: () async {
+              if(_currentUser != null) {
+                createEvent(_currentUser!);
+              }
+              else {
+                print('No user signed in');
+              }
+            },
+            child: const Text('Create test event'),
+          ),
         ],
       );
     } else {
