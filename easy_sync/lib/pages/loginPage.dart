@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
 
     final email = await _prefs.getEmailKey();
     final calendar = await _prefs.getSelectedCal();
-    final calendarList = await _prefs.getCalendarList();
+    final calendarList = await _prefs.getCalendarListKey();
 
     setState(() {
       _email = email;

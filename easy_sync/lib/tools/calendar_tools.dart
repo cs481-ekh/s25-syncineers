@@ -26,18 +26,20 @@ import 'settings_provider.dart';
       final calendar.CalendarList calendarList = await calendar.CalendarApi(client).calendarList.list();
 
       List<String> calendarIds = [];
+      List<String> calendarSummaries = [];
       // _prefs.setUserCalendarSets(calendarList.items?.toString());
 
       print('Calendar List:'); 
       for (var item in calendarList.items ?? []) {
         print('${item.summary} (${item.id})');
+        calendarSummaries.add(item.summary!);
         calendarIds.add(item.id!);
       }
 
-      _prefs.setUserCalendarSets(calendarIds);
+      _prefs.setUserCalendarSets(calendarIds,calendarSummaries);
 
-      final calendarOut = await _prefs.getCalendarList();
-      print('calendar type: ${calendarOut.runtimeType}');
+      // final calendarOut = await _prefs.getCalendarList();
+      // print('calendar type: ${calendarOut.runtimeType}');
 
       client.close();
     } catch (e) {
@@ -47,7 +49,7 @@ import 'settings_provider.dart';
     }
   }
 
-  void createEvent(GoogleSignInAccount currentUser) async {
+  void createEvent(GoogleSignInAccount currentUser, String calendarId) async {
    try {
       final GoogleSignInAuthentication googleAuth = await currentUser.authentication;
 
@@ -64,6 +66,7 @@ import 'settings_provider.dart';
 
       final calendar.Event event = calendar.Event(
       summary: 'New Event',
+
       description: 'A new event created from Flutter app',
       start: calendar.EventDateTime(
         dateTime: DateTime.now(),
@@ -76,7 +79,8 @@ import 'settings_provider.dart';
     );
 
     final calendar.CalendarApi calendarApi = calendar.CalendarApi(client);
-    final String calendarId = 'primary'; // Use 'primary' for the primary calendar
+   // const String calendarId = 'c_27cf9ebd1940281735b50fe02d1e3cb2e722d537fe981b4304582abb27563bd1@group.calendar.google.com'; 
+    // Use 'primary' for the primary calendar
     await calendarApi.events.insert(event, calendarId);
 
     print('Event created: ${event.summary}');

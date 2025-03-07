@@ -12,7 +12,8 @@ class SharedPreferencesManager {
 
   //late List<String> calendarListKey;
 
-  String calendarListKey = 'calendarList';
+  String calendarNameKey = 'calendarList';
+  String calendarIDKey = 'calendarID';
 
   String selectedCalKey = 'selectedCal';
 
@@ -37,15 +38,16 @@ class SharedPreferencesManager {
   }
 
   //maybe change to a map? for claendar set summary and id
-  Future<void> setUserCalendarSets(data) async {
+  Future<void> setUserCalendarSets(ids, title) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    print("DATA: $data");
-    print("TYPE: ${data.runtimeType}");
+    // print("DATA: $data");
+    // print("TYPE: ${data.runtimeType}");
 
-    prefs.setStringList(calendarListKey, data);
+    prefs.setStringList(calendarIDKey, ids);
+    prefs.setStringList(calendarNameKey, title);
 
-    print("KEY PRINT: $calendarListKey");
+   // print("KEY PRINT: $calendarListKey");
   }
 
   Future<void> setSelectedCal(data) async {
@@ -60,10 +62,26 @@ class SharedPreferencesManager {
     return prefs.getString(emailKey) ?? '';
   }
 
-//changed from object to string?
-  Future<Object> getCalendarList() async {
+  //returns plaintext calendar list
+  Future<Object> getCalendarListKey() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getStringList(calendarListKey) ?? '';
+
+    return prefs.getStringList(calendarNameKey) ?? '';
+   // return prefs.getStringList(calendarNameKey) ?? '';
+  }
+
+  Future<String> getCalendarID(String calendarName) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    List<String> calendarNames = prefs.getStringList(calendarNameKey) ?? [];
+    List<String> calendarIDs = prefs.getStringList(calendarIDKey) ?? [];
+
+    int index = calendarNames.indexOf(calendarName);
+    if (index != -1 && index < calendarIDs.length) {
+      return calendarIDs[index];
+    } else {
+      throw Exception('Calendar ID not found for the given calendar name.');
+    }
   }
 
   Future<String> getSelectedCal() async {
