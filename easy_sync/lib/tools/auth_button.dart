@@ -86,7 +86,8 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
           ElevatedButton(
             onPressed: () async {
               if(_currentUser != null) {
-                createEvent(_currentUser!);
+                final cal = await _prefs.getSelectedCal();
+                createEvent(_currentUser!, await _prefs.getCalendarID(cal));
               }
               else {
                 print('No user signed in');
