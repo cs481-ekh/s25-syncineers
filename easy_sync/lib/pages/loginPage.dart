@@ -103,7 +103,8 @@ class _LoginPageState extends State<LoginPage> {
             onPressed: () async {
               if(_currentUser != null) {
                 final cal = await _prefs.getSelectedCal();
-                createEvent(_currentUser!, await _prefs.getCalendarID(cal));
+                createEvent(_currentUser!, await _prefs.getCalendarID(cal), "Event Title", "Event Description", 
+                "My house", "2025-03-08T17:00", "2025-03-08T18:00", "America/Denver", ['RRULE:FREQ=WEEKLY;BYDAY=MO,WE;UNTIL=20250315T000000Z']);
               }
               else {
                 print('No user signed in');
