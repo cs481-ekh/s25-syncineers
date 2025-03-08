@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class SharedPreferencesManager {
 
+  //user values
   String displayNameKey = 'displayName';
   String emailKey = 'email';
   String idKey = 'id';
@@ -37,6 +38,17 @@ class SharedPreferencesManager {
     prefs.remove(serverAuthCodeKey);
   }
 
+    Future<Map<String, String>> getUserValues() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return {
+      'displayName': prefs.getString(displayNameKey) ?? '',
+      'email': prefs.getString(emailKey) ?? '',
+      'id': prefs.getString(idKey) ?? '',
+      'photoUrl': prefs.getString(photoUrlKey) ?? '',
+      'serverAuthCode': prefs.getString(serverAuthCodeKey) ?? '',
+    };
+  }
+
   //maybe change to a map? for claendar set summary and id
   Future<void> setUserCalendarSets(ids, title) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -63,10 +75,10 @@ class SharedPreferencesManager {
   }
 
   //returns plaintext calendar list
-  Future<Object> getCalendarListKey() async {
+  Future<List<String>> getCalendarListKey() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    return prefs.getStringList(calendarNameKey) ?? '';
+    return prefs.getStringList(calendarNameKey) ?? [];
    // return prefs.getStringList(calendarNameKey) ?? '';
   }
 
