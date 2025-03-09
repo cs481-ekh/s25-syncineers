@@ -1,36 +1,35 @@
 import 'package:flutter/material.dart';
 
 class EditPage extends StatefulWidget {
+  late final dataset table;
 
-  const EditPage(List<List<String>> rows, {super.key});
+  EditPage(List<List<String>> table, {super.key}) {
+    this.table = dataset(table);
+  }
 
   @override
   _EditPageState createState() => _EditPageState();
 }
 
 class _EditPageState extends State<EditPage> {
+  int questionIndex = 0;
+
+  List<String> questions = [
+    "How is each event title constructed",
+    "Where is the Location",
+    "Which column contains the first day",
+    "Which column contains the last day",
+    "Which column contains the start time",
+    "Which column contains the end time",
+    "Which column contains which days of the week are repeated",
+  ];
+
   @override
   Widget build(BuildContext context) {
-    Theme.of(context);
-    var questionToAnswer = 'What is the title of the events';
-    var list = [
-      questionAnswer("Subject", "GEOG"),
-      questionAnswer("Descr", "Introduction to Geography"),
-      questionAnswer("Course ID", "102477"),
-      questionAnswer("Room", "BLDR205"),
-      questionAnswer("Meeting Dates", "03/10/2025-05/02/2025"),
-    ];
-
+    // Theme.of(context);
     return QuestionWidget(
-        questionToAnswer: questionToAnswer, selectableAnswers: list);
+        questionToAnswer: questions[questionIndex], selectableAnswers: widget.table);
   }
-}
-
-class questionAnswer {
-  late String title;
-  late String example;
-
-  questionAnswer(this.title, this.example);
 }
 
 class QuestionWidget extends StatefulWidget {
@@ -41,40 +40,91 @@ class QuestionWidget extends StatefulWidget {
   });
 
   final String questionToAnswer;
-  final List<questionAnswer> selectableAnswers;
+  final dataset selectableAnswers;
 
   @override
   _QuestionWidgetState createState() => _QuestionWidgetState();
 }
 
+class dataset{
+  List<List<String>> information;
+  int exampleIndex = 1;
+  int numQuestions = 0;
+
+  dataset(this.information);
+
+  String getTitle(int index) {
+    if (index < 0 || index >= information.length || information[index].isEmpty) {
+      return "";
+    }
+
+    return information[index][0];
+  }
+
+  String getExample(int index) {
+    if (index < 0 || index >= information.length || information[index].length <= 1) {
+      return "";
+    }
+
+    return information[index][exampleIndex];
+  }
+
+  void nextExample(){
+    if (information.isEmpty || information[0].length <= 2) {
+      return;
+    }
+    exampleIndex++;
+    if (exampleIndex >= information[0].length) {
+      exampleIndex = 1;
+    }
+  }
+
+  void previousExample(){
+    if (information.isEmpty || information[0].length <= 2) {
+      return;
+    }
+    exampleIndex--;
+    if (exampleIndex < 1) {
+      exampleIndex = information[0].length - 1;
+    }
+  }
+}
+
 class _QuestionWidgetState extends State<QuestionWidget> {
-  List<questionAnswer> selectedAnswers = [];
+  List<int> selectedAnswerIndices = [];
   // TODO there probably is a better way of doing this.
   Color cardShade = const Color.fromARGB(1, 126, 126, 126);
 
   @override
   Widget build(BuildContext context) {
     String example = "";
-    for (var answer in selectedAnswers) {
-      example += "${answer.example} ";
+    for (var index in selectedAnswerIndices) {
+      example += "${widget.selectableAnswers.getExample(index)} ";
     }
 
     return Card(
       child: Column(
         children: [
           Text(widget.questionToAnswer),
-          Text("Example output: $example"),
+          Row(children: [
+            FilledButton(onPressed: () {widget.selectableAnswers.previousExample();}, child: const Text("Previous example")),
+          Expanded(child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("Example output: $example"),
+          )),
+            FilledButton(onPressed: () {widget.selectableAnswers.nextExample();}, child: const Text("Next example")),
+          ],),
           Expanded(
             child: Card(
               color: cardShade,
               child: ListView.builder(
-                  itemCount: selectedAnswers.length,
+                  itemCount: selectedAnswerIndices.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                        title: Text(selectedAnswers[index].title),
+                        title: Text(widget.selectableAnswers.getTitle(selectedAnswerIndices[index])),
                         onTap: () async {
                           setState(() {
-                            selectedAnswers.removeAt(index);
+                            selectedAnswerIndices.removeAt(index);
                           });
                         });
                   }),
@@ -85,15 +135,15 @@ class _QuestionWidgetState extends State<QuestionWidget> {
             child: Card(
               color: cardShade,
               child: ListView.builder(
-                  itemCount: widget.selectableAnswers.length,
+                  itemCount: widget.selectableAnswers.information.length,
                   itemBuilder: (context, index) {
                     return ListTile(
                         title: Text(
-                            "${widget.selectableAnswers[index].title} | ${widget.selectableAnswers[index].example}"),
+                            "${widget.selectableAnswers.getTitle(index)} | ${widget.selectableAnswers.getExample(index)}"),
                         onTap: () async {
                           setState(() {
-                            selectedAnswers
-                                .add(widget.selectableAnswers[index]);
+                            selectedAnswerIndices
+                                .add(index);
                           });
                         });
                   }),
