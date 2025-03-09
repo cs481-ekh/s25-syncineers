@@ -9,7 +9,10 @@ import 'settings_provider.dart';
 
 
 class GoogleSignInButton extends StatefulWidget {
-  const GoogleSignInButton({super.key});
+
+  final Function(GoogleSignInAccount?) onSignIn;
+
+  const GoogleSignInButton({super.key, required this.onSignIn});
 
   @override
   _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
@@ -31,8 +34,11 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
       setState(() {
         _currentUser = account;
-        print('Current user: $_currentUser');
+        print('Current user in auth button: $_currentUser');
         _prefs.setUser(_currentUser);
+       // if(_currentUser != null) {
+          widget.onSignIn(_currentUser);
+      //  }
       });
     });
     // Attempt to sign in silently upon app start.
@@ -42,6 +48,9 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
     try {
       await _googleSignIn.signIn();
       // You can now use _currentUser to access user details.
+     // if (_currentUser != null) {
+        widget.onSignIn(_currentUser);
+    //  }
     } catch (error) {
       print('Sign in failed: $error');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -54,6 +63,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
   Future<void> _handleSignOut() async {
     await _googleSignIn.disconnect();
     await _prefs.clearUser();
+    widget.onSignIn(null);
   }
 
 
@@ -72,29 +82,29 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
             child: Text('Sign Out'),
           ),
           //eventually move this out of auth button into signin page
-          ElevatedButton(
-            onPressed: () async {
-              if(_currentUser != null) {
-                await getCalendarList(_currentUser!);
-              }
-              else {
-                print('No user signed in');
-              }
-            },
-            child: const Text('Get Calendar List'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              if(_currentUser != null) {
-                final cal = await _prefs.getSelectedCal();
-                createEvent(_currentUser!, await _prefs.getCalendarID(cal));
-              }
-              else {
-                print('No user signed in');
-              }
-            },
-            child: const Text('Create test event'),
-          ),
+          // ElevatedButton(
+          //   onPressed: () async {
+          //     if(_currentUser != null) {
+          //       await getCalendarList(_currentUser!);
+          //     }
+          //     else {
+          //       print('No user signed in');
+          //     }
+          //   },
+          //   child: const Text('Get Calendar List'),
+          // ),
+          // ElevatedButton(
+          //   onPressed: () async {
+          //     if(_currentUser != null) {
+          //       final cal = await _prefs.getSelectedCal();
+          //       createEvent(_currentUser!, await _prefs.getCalendarID(cal));
+          //     }
+          //     else {
+          //       print('No user signed in');
+          //     }
+          //   },
+          //   child: const Text('Create test event'),
+          // ),
         ],
       );
     } else {

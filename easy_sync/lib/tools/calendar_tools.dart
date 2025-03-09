@@ -49,8 +49,11 @@ import 'settings_provider.dart';
     }
   }
 
-  void createEvent(GoogleSignInAccount currentUser, String calendarId) async {
+  void createEvent(GoogleSignInAccount currentUser, String calendarId, 
+    String summary, String description, String location, String startTime, String endTime,
+    String timezone, List<String> recurrenceRules) async {
    try {
+
       final GoogleSignInAuthentication googleAuth = await currentUser.authentication;
 
       final auth.AccessCredentials credentials = auth.AccessCredentials(
@@ -65,17 +68,18 @@ import 'settings_provider.dart';
       );
 
       final calendar.Event event = calendar.Event(
-      summary: 'New Event',
-
-      description: 'A new event created from Flutter app',
+      summary: summary,
+      location: location,
+      description: description,
       start: calendar.EventDateTime(
-        dateTime: DateTime.now(),
-        timeZone: 'GMT-7:00',
+        dateTime: DateTime.parse(startTime),
+        timeZone: timezone,
       ),
       end: calendar.EventDateTime(
-        dateTime: DateTime.now().add(Duration(hours: 1)),
-        timeZone: 'GMT-7:00',
+        dateTime: DateTime.parse(endTime),
+        timeZone: timezone,
       ),
+      recurrence: recurrenceRules,
     );
 
     final calendar.CalendarApi calendarApi = calendar.CalendarApi(client);
@@ -83,11 +87,53 @@ import 'settings_provider.dart';
     // Use 'primary' for the primary calendar
     await calendarApi.events.insert(event, calendarId);
 
-    print('Event created: ${event.summary}');
+   // print('Event created: ${event.summary}');
 
       client.close();
     } catch (e) {
       print('Failed to create event: $e');
+    }
+  }
+
+  void createMultipleEvents(GoogleSignInAccount currentUser, String calendarId, List<String> eventSummaries) async {
+    try {
+      final GoogleSignInAuthentication googleAuth = await currentUser.authentication;
+
+      final auth.AccessCredentials credentials = auth.AccessCredentials(
+        auth.AccessToken("Bearer", googleAuth.accessToken!, DateTime.now().toUtc()),
+        googleAuth.idToken,
+        ['https://www.googleapis.com/auth/calendar'],
+      );
+
+      final auth.AuthClient client = auth.authenticatedClient(
+        http.Client(),
+        credentials,
+      );
+
+      final calendar.CalendarApi calendarApi = calendar.CalendarApi(client);
+
+      for (var summary in eventSummaries) {
+        final calendar.Event event = calendar.Event(
+          summary: summary,
+          description: 'A new event created from Flutter app',
+          start: calendar.EventDateTime(
+            dateTime: DateTime.now(),
+            timeZone: 'GMT-7:00',
+          ),
+          end: calendar.EventDateTime(
+            dateTime: DateTime.now().add(Duration(hours: 1)),
+            timeZone: 'GMT-7:00',
+          ),
+        );
+
+        await calendarApi.events.insert(event, calendarId);
+
+        print('Event created: ${event.summary}');
+      }
+
+      client.close();
+    } catch (e) {
+      print('Failed to create events: $e');
     }
   }
  
