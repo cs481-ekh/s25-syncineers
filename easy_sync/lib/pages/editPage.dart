@@ -28,7 +28,8 @@ class _EditPageState extends State<EditPage> {
   Widget build(BuildContext context) {
     // Theme.of(context);
     return QuestionWidget(
-        questionToAnswer: questions[questionIndex], selectableAnswers: widget.table);
+        questionToAnswer: questions[questionIndex],
+        selectableAnswers: widget.table);
   }
 }
 
@@ -46,7 +47,7 @@ class QuestionWidget extends StatefulWidget {
   _QuestionWidgetState createState() => _QuestionWidgetState();
 }
 
-class dataset{
+class dataset {
   List<List<String>> information;
   int exampleIndex = 1;
   int numQuestions = 0;
@@ -54,38 +55,40 @@ class dataset{
   dataset(this.information);
 
   String getTitle(int index) {
-    if (index < 0 || index >= information.length || information[index].isEmpty) {
+    if (information.isEmpty || index < 0 || index >= information[0].length) {
       return "";
     }
 
-    return information[index][0];
+    return information[0][index];
   }
 
   String getExample(int index) {
-    if (index < 0 || index >= information.length || information[index].length <= 1) {
+    if (information.length <= exampleIndex ||
+        index < 0 ||
+        index >= information[exampleIndex].length) {
       return "";
     }
 
-    return information[index][exampleIndex];
+    return information[exampleIndex][index];
   }
 
-  void nextExample(){
-    if (information.isEmpty || information[0].length <= 2) {
+  void nextExample() {
+    if (information.isEmpty || information.length <= 2) {
       return;
     }
     exampleIndex++;
-    if (exampleIndex >= information[0].length) {
+    if (exampleIndex >= information.length) {
       exampleIndex = 1;
     }
   }
 
-  void previousExample(){
-    if (information.isEmpty || information[0].length <= 2) {
+  void previousExample() {
+    if (information.isEmpty || information.length <= 2) {
       return;
     }
     exampleIndex--;
     if (exampleIndex < 1) {
-      exampleIndex = information[0].length - 1;
+      exampleIndex = information.length - 1;
     }
   }
 }
@@ -106,14 +109,29 @@ class _QuestionWidgetState extends State<QuestionWidget> {
       child: Column(
         children: [
           Text(widget.questionToAnswer),
-          Row(children: [
-            FilledButton(onPressed: () {widget.selectableAnswers.previousExample();}, child: const Text("Previous example")),
-          Expanded(child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text("Example output: $example"),
-          )),
-            FilledButton(onPressed: () {widget.selectableAnswers.nextExample();}, child: const Text("Next example")),
-          ],),
+          Row(
+            children: [
+              FilledButton(
+                  onPressed: () {
+                    setState(() {
+                      widget.selectableAnswers.previousExample();
+                    });
+                  },
+                  child: const Text("Previous example")),
+              Expanded(
+                  child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("Example output: $example"),
+              )),
+              FilledButton(
+                  onPressed: () {
+                    setState(() {
+                      widget.selectableAnswers.nextExample();
+                    });
+                  },
+                  child: const Text("Next example")),
+            ],
+          ),
           Expanded(
             child: Card(
               color: cardShade,
@@ -121,7 +139,8 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                   itemCount: selectedAnswerIndices.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                        title: Text(widget.selectableAnswers.getTitle(selectedAnswerIndices[index])),
+                        title: Text(widget.selectableAnswers
+                            .getTitle(selectedAnswerIndices[index])),
                         onTap: () async {
                           setState(() {
                             selectedAnswerIndices.removeAt(index);
@@ -142,8 +161,7 @@ class _QuestionWidgetState extends State<QuestionWidget> {
                             "${widget.selectableAnswers.getTitle(index)} | ${widget.selectableAnswers.getExample(index)}"),
                         onTap: () async {
                           setState(() {
-                            selectedAnswerIndices
-                                .add(index);
+                            selectedAnswerIndices.add(index);
                           });
                         });
                   }),
