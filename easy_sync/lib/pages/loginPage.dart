@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_sync/tools/auth_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:easy_sync/tools/calendar_tools.dart';
+import 'package:easy_sync/tools/event_struct.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
@@ -103,8 +104,34 @@ class _LoginPageState extends State<LoginPage> {
             onPressed: () async {
               if(_currentUser != null) {
                 final cal = await _prefs.getSelectedCal();
-                createEvent(_currentUser!, await _prefs.getCalendarID(cal), "Event Title", "Event Description", 
-                "My house", "2025-03-08T17:00", "2025-03-08T18:00", "America/Denver", ['RRULE:FREQ=WEEKLY;BYDAY=MO,WE;UNTIL=20250315T000000Z']);
+                final event = EventStruct(
+                  summary: "Event Title", 
+                  description: "Event Description", 
+                  location: "My house", 
+                  startTime: "2025-03-10T17:00", 
+                  endTime: "2025-03-10T18:00", 
+                  timezone: "America/Denver", 
+                  recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=MO,WE;UNTIL=20250315T000000Z']);
+                final event1 = EventStruct(
+                  summary: "Testing", 
+                  description: "Event Description", 
+                  location: "My house", 
+                  startTime: "2025-03-10T18:00", 
+                  endTime: "2025-03-10T19:00", 
+                  timezone: "America/Denver", 
+                  recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=TU,TH;UNTIL=20250315T000000Z']);
+                final event2 = EventStruct(
+                  summary: "Hello there", 
+                  description: "Event Description", 
+                  location: "My house", 
+                  startTime: "2025-03-10T19:00", 
+                  endTime: "2025-03-10T20:00", 
+                  timezone: "America/Denver", 
+                  recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=F;UNTIL=20250315T000000Z']);
+                
+                final eventList = [event, event1, event2];
+                //createEvent(_currentUser!, await _prefs.getCalendarID(cal), event);
+                createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), eventList);
               }
               else {
                 print('No user signed in');
