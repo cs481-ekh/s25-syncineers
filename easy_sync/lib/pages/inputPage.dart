@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:easy_sync/pages/editPage.dart';
@@ -13,7 +14,8 @@ class InputPage extends StatefulWidget {
 }
 
 class _InputPageState extends State<InputPage> {
-  String? filePath;
+  String? fileName;
+  String? fileExtension;
   List<List<String>> rows = [[]];
   List<String> columnNames = [];
 
@@ -25,20 +27,22 @@ class _InputPageState extends State<InputPage> {
 
     if (result != null) {
       setState(() {
-        filePath = result.files.single.name;
+        fileName = result.files.single.name;
       });
 
       Uint8List? fileBytes = result.files.single.bytes;
       
       if (fileBytes != null) {
-        if (filePath!.endsWith('.csv')) {
+        if (fileName!.endsWith('.csv')) {
+          fileExtension = '.csv';
           String contents = utf8.decode(fileBytes);
           rows = parseCSV(contents);
-        } else if (filePath!.endsWith('.xls')) {
-          rows = [["IMPORTING XLS FILES UNSUPPORTED AT THIS TIME. XLSX FILES SUPPORTED"]];
-          print("\nAction unsupported at this time.\n");
-        } else if (filePath!.endsWith('.xlsx')) {
-          rows = parseExcel(fileBytes);
+        } else if (fileName!.endsWith('.xls')) {
+          fileExtension = '.xls';
+          rows = parseXLS();
+        } else if (fileName!.endsWith('.xlsx')) {
+          fileExtension = '.xlsx';
+          rows = parseXLSX(fileBytes);
         }
       }
     }
@@ -51,11 +55,11 @@ class _InputPageState extends State<InputPage> {
     return rows;
   }
 
-  List<List<String>> parseExcel(Uint8List bytes) {
+  List<List<String>> parseXLSX(Uint8List bytes) {
     var excel = Excel.decodeBytes(bytes);
     List<List<String>> data = [];
 
-    if (filePath!.endsWith('.xlsx')) {
+    if (fileName!.endsWith('.xlsx')) {
     var excel = Excel.decodeBytes(bytes);
     for (var table in excel.tables.keys) {
       for (var row in excel.tables[table]!.rows) {
@@ -68,6 +72,15 @@ class _InputPageState extends State<InputPage> {
     return data;
   }
 
+  List<List<String>> parseXLS() {
+    // List<List<String>> rows = fileContents.trim().split('\n').map((line) => line.split('\t')).toList();
+    // columnNames = rows[0];
+    // print("\n$columnNames");
+    // return rows;
+    print("\nParsing XLS files is unsupported at this time\n");
+    return [['Parsing XLS files is unsupported at this time']];
+  } 
+
   Widget build(BuildContext context) {
     return Center(
       child: Column(
@@ -78,23 +91,19 @@ class _InputPageState extends State<InputPage> {
             onPressed: getFile, 
             icon: const Icon(Icons.file_open, color: Colors.blue, size: 100.0),
           ),
+          if (fileExtension == '.xls')
+          const Text(
+            "XLS file uploads are not supported at this time"
+          ),
+          if (fileName != null && fileExtension != '.xls')
           SizedBox(
             height: 250,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'File Contents:\n',
+                Text(
+                  'File uploaded: $fileName',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14),
-                ),
-                const SizedBox(height: 5),
-                if (rows.isNotEmpty)
-                SingleChildScrollView(
-                  child: Text(
-                    rows.map((row) => row.join(', ')).join('\n'),
-                    style: const TextStyle(fontSize: 14),
-                  ),
                 ),
                 ElevatedButton(
                   onPressed: () {
