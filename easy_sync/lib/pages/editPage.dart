@@ -1,58 +1,93 @@
 import 'package:flutter/material.dart';
 
 class EditPage extends StatefulWidget {
-  late final dataset table;
+  late final Dataset table;
 
   EditPage(List<List<String>> table, {super.key}) {
-    this.table = dataset(table);
+    this.table = Dataset(table);
   }
 
   @override
   _EditPageState createState() => _EditPageState();
 }
 
+class QuestionAndAnswers {
+  String key;
+  String question;
+  List<int> answerIndices;
+
+  QuestionAndAnswers(this.key, this.question) : answerIndices = [];
+}
+
 class _EditPageState extends State<EditPage> {
   int questionIndex = 0;
 
-  List<String> questions = [
-    "How is each event title constructed",
-    "Where is the Location",
-    "Which column contains the first day",
-    "Which column contains the last day",
-    "Which column contains the start time",
-    "Which column contains the end time",
-    "Which column contains which days of the week are repeated",
+  List<QuestionAndAnswers> questions = [
+    QuestionAndAnswers("summaryColumns", "How is each event title constructed"),
+    QuestionAndAnswers("locationColumns", "Where is the Location"),
+    QuestionAndAnswers("", "Which column contains the first day"),
+    QuestionAndAnswers("", "Which column contains the last day"),
+    QuestionAndAnswers("startTimeColumns", "Which column contains the start time"),
+    QuestionAndAnswers("endTimeColumns", "Which column contains the end time"),
+    QuestionAndAnswers(
+        "recurrenceColumns", "Which column contains which days of the week are repeated"),
   ];
 
   @override
   Widget build(BuildContext context) {
-    // Theme.of(context);
-    return QuestionWidget(
-        questionToAnswer: questions[questionIndex],
-        selectableAnswers: widget.table);
+    if (questionIndex < 0) {
+      questionIndex = 0;
+    }
+
+    if (questionIndex >= questions.length) {
+      return const Text(
+          "TODO build page to allow the user to review the decisions made, restart to the beginning or go back to the previous question if needed, but if they are happy allow them to move on to the next page which will ask which calendars locations go to.");
+    } else {
+      return Column(
+        children: [
+          Expanded(
+            child: QuestionWidget(
+              questionAndAnswerIndices: questions[questionIndex],
+              selectableAnswers: widget.table,
+              callBackFunction: () {
+                setState(() {});
+              },
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: FilledButton(
+                    onPressed: () {
+                      setState(() {
+                        questionIndex--;
+                      });
+                    },
+                    child: const Text("Previous question")),
+              ),
+              Expanded(
+                child: FilledButton(
+                    onPressed: () {
+                      setState(() {
+                        questionIndex++;
+                      });
+                    },
+                    child: const Text("Next question")),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
   }
 }
 
-class QuestionWidget extends StatefulWidget {
-  const QuestionWidget({
-    super.key,
-    required this.questionToAnswer,
-    required this.selectableAnswers,
-  });
-
-  final String questionToAnswer;
-  final dataset selectableAnswers;
-
-  @override
-  _QuestionWidgetState createState() => _QuestionWidgetState();
-}
-
-class dataset {
+class Dataset {
   List<List<String>> information;
   int exampleIndex = 1;
   int numQuestions = 0;
 
-  dataset(this.information);
+  Dataset(this.information);
 
   String getTitle(int index) {
     if (information.isEmpty || index < 0 || index >= information[0].length) {
@@ -93,29 +128,37 @@ class dataset {
   }
 }
 
-class _QuestionWidgetState extends State<QuestionWidget> {
-  List<int> selectedAnswerIndices = [];
-  // TODO there probably is a better way of doing this.
-  Color cardShade = const Color.fromARGB(1, 126, 126, 126);
+class QuestionWidget extends StatelessWidget {
+  const QuestionWidget({
+    super.key,
+    required this.questionAndAnswerIndices,
+    required this.selectableAnswers,
+    required this.callBackFunction,
+  });
+
+  final Function() callBackFunction;
+  final QuestionAndAnswers questionAndAnswerIndices;
+  final Dataset selectableAnswers;
+
+  final Color cardShade = const Color.fromARGB(1, 126, 126, 126);
 
   @override
   Widget build(BuildContext context) {
     String example = "";
-    for (var index in selectedAnswerIndices) {
-      example += "${widget.selectableAnswers.getExample(index)} ";
+    for (var index in questionAndAnswerIndices.answerIndices) {
+      example += "${selectableAnswers.getExample(index)} ";
     }
 
     return Card(
       child: Column(
         children: [
-          Text(widget.questionToAnswer),
+          Text(questionAndAnswerIndices.question),
           Row(
             children: [
               FilledButton(
                   onPressed: () {
-                    setState(() {
-                      widget.selectableAnswers.previousExample();
-                    });
+                    selectableAnswers.previousExample();
+                    callBackFunction();
                   },
                   child: const Text("Previous example")),
               Expanded(
@@ -125,9 +168,8 @@ class _QuestionWidgetState extends State<QuestionWidget> {
               )),
               FilledButton(
                   onPressed: () {
-                    setState(() {
-                      widget.selectableAnswers.nextExample();
-                    });
+                    callBackFunction();
+                    selectableAnswers.nextExample();
                   },
                   child: const Text("Next example")),
             ],
@@ -136,15 +178,15 @@ class _QuestionWidgetState extends State<QuestionWidget> {
             child: Card(
               color: cardShade,
               child: ListView.builder(
-                  itemCount: selectedAnswerIndices.length,
+                  itemCount: questionAndAnswerIndices.answerIndices.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                        title: Text(widget.selectableAnswers
-                            .getTitle(selectedAnswerIndices[index])),
+                        title: Text(selectableAnswers.getTitle(
+                            questionAndAnswerIndices.answerIndices[index])),
                         onTap: () async {
-                          setState(() {
-                            selectedAnswerIndices.removeAt(index);
-                          });
+                          questionAndAnswerIndices.answerIndices
+                              .removeAt(index);
+                          callBackFunction();
                         });
                   }),
             ),
@@ -154,24 +196,18 @@ class _QuestionWidgetState extends State<QuestionWidget> {
             child: Card(
               color: cardShade,
               child: ListView.builder(
-                  itemCount: widget.selectableAnswers.information.length,
+                  itemCount: selectableAnswers.information.length,
                   itemBuilder: (context, index) {
                     return ListTile(
                         title: Text(
-                            "${widget.selectableAnswers.getTitle(index)} | ${widget.selectableAnswers.getExample(index)}"),
+                            "${selectableAnswers.getTitle(index)} | ${selectableAnswers.getExample(index)}"),
                         onTap: () async {
-                          setState(() {
-                            selectedAnswerIndices.add(index);
-                          });
+                          questionAndAnswerIndices.answerIndices.add(index);
+                          callBackFunction();
                         });
                   }),
             ),
           ),
-          TextButton(
-              onPressed: () {
-                /**TODO send information off to context when pressed */
-              },
-              child: const Text("Answer question")),
         ],
       ),
     );
