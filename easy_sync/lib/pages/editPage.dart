@@ -85,9 +85,16 @@ class _EditPageState extends State<EditPage> {
 class Dataset {
   List<List<String>> information;
   int exampleIndex = 1;
-  int numQuestions = 0;
 
   Dataset(this.information);
+
+  int numColumns() {
+    if (information.isEmpty) {
+      return 0;
+    }
+
+    return information[0].length;
+  }
 
   String getTitle(int index) {
     if (information.isEmpty || index < 0 || index >= information[0].length) {
@@ -196,7 +203,7 @@ class QuestionWidget extends StatelessWidget {
             child: Card(
               color: cardShade,
               child: ListView.builder(
-                  itemCount: selectableAnswers.information.length,
+                  itemCount: selectableAnswers.numColumns(),
                   itemBuilder: (context, index) {
                     return ListTile(
                         title: Text(
