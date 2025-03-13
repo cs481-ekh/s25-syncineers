@@ -39,7 +39,8 @@ class _InputPageState extends State<InputPage> {
           rows = parseCSV(contents);
         } else if (fileName!.endsWith('.xls')) {
           fileExtension = '.xls';
-          rows = parseXLS();
+          String contents = utf8.decode(fileBytes);
+          rows = parseXLS(contents);
         } else if (fileName!.endsWith('.xlsx')) {
           fileExtension = '.xlsx';
           rows = parseXLSX(fileBytes);
@@ -72,13 +73,11 @@ class _InputPageState extends State<InputPage> {
     return data;
   }
 
-  List<List<String>> parseXLS() {
-    // List<List<String>> rows = fileContents.trim().split('\n').map((line) => line.split('\t')).toList();
-    // columnNames = rows[0];
-    // print("\n$columnNames");
-    // return rows;
-    print("\nParsing XLS files is unsupported at this time\n");
-    return [['Parsing XLS files is unsupported at this time']];
+  List<List<String>> parseXLS(String fileContents) {
+    List<List<String>> rows = fileContents.trim().split('\n').map((line) => line.trim().split('\t')).toList();
+    columnNames = rows[0];
+    print("\n$columnNames");
+    return rows;
   } 
 
   Widget build(BuildContext context) {
@@ -91,11 +90,7 @@ class _InputPageState extends State<InputPage> {
             onPressed: getFile, 
             icon: const Icon(Icons.file_open, color: Colors.blue, size: 100.0),
           ),
-          if (fileExtension == '.xls')
-          const Text(
-            "XLS file uploads are not supported at this time"
-          ),
-          if (fileName != null && fileExtension != '.xls')
+          if (fileName != null)
           SizedBox(
             height: 250,
             child: Column(
