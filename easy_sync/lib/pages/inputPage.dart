@@ -1,8 +1,8 @@
 
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:csv/csv.dart';
 import 'package:easy_sync/pages/editPage.dart';
 import 'package:easy_sync/tools/frame.dart';
 import 'package:excel/excel.dart';
@@ -49,15 +49,17 @@ class _InputPageState extends State<InputPage> {
     }
   }
 
+  // Parse CSV files
   List<List<String>> parseCSV(String fileContents) {
-    List<List<String>> rows = fileContents.trim().split('\n').map((line) => line.split(',')).toList();
+    List<List<dynamic>> csvData = const CsvToListConverter().convert(fileContents);
+    List<List<String>> rows = csvData.map((row) => row.map((e) => e.toString()).toList()).toList();
     columnNames = rows[0];
     print("\n$columnNames");
     return rows;
   }
 
+  // Parse XLSX Files
   List<List<String>> parseXLSX(Uint8List bytes) {
-    var excel = Excel.decodeBytes(bytes);
     List<List<String>> data = [];
 
     if (fileName!.endsWith('.xlsx')) {
@@ -73,6 +75,7 @@ class _InputPageState extends State<InputPage> {
     return data;
   }
 
+  // Parse XLS files
   List<List<String>> parseXLS(String fileContents) {
     List<List<String>> rows = fileContents.trim().split('\n').map((line) => line.trim().split('\t')).toList();
     columnNames = rows[0];

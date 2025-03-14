@@ -17,6 +17,7 @@ dependencies:
   shared_preferences: ^2.5.2
   excel: ^4.0.6
   syncfusion_flutter_xlsio: ^28.2.9
+  csv: ^6.0.0
 
 dev_dependencies:
   flutter_test:
