@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -77,7 +76,18 @@ class _InputPageState extends State<InputPage> {
 
   // Parse XLS files
   List<List<String>> parseXLS(String fileContents) {
-    List<List<String>> rows = fileContents.trim().split('\n').map((line) => line.trim().split('\t')).toList();
+    // List<List<String>> rows = fileContents.trim().split('\n').map((line) => line.trim().split('\t')).toList();
+
+    List<List<String>> rows = fileContents.trim().split('\n').map((line) {
+      return line.trim().split('\t').map((cell) {
+        // try to parse cell as a double
+        if (double.tryParse(cell) != null) { // Cell is a double value
+          double doubleValue = double.parse(cell);
+          return doubleValue == doubleValue.toInt() ? doubleValue.toInt().toString() : doubleValue.toString(); // If there are only zeroes after the decimal, they are removed, otherwise they are kept
+        }
+        return cell; // Cell is not a double value
+      }).toList();
+    }).toList(); 
     columnNames = rows[0];
     print("\n$columnNames");
     return rows;
