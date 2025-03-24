@@ -102,6 +102,7 @@ class _LoginPageState extends State<LoginPage> {
           const SnackBar(content: Text('No next page')),
         );
       },
+      nextColor: Colors.grey,
       child: Center(
         child: Column(
           children: [

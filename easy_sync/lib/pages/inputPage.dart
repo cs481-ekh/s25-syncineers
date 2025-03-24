@@ -87,6 +87,7 @@ class _InputPageState extends State<InputPage> {
       onNextPressed: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) => EditPage(rows)));
       },
+      prevColor: Colors.grey,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

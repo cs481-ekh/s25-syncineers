@@ -4,6 +4,8 @@ class Frame extends StatefulWidget {
   final Widget child;
   final String title;
   final VoidCallback? onNextPressed;
+  final Color? nextColor;
+  final Color? prevColor;
 
 
   const Frame({
@@ -11,6 +13,8 @@ class Frame extends StatefulWidget {
     required this.title,
     required this.child,
     this.onNextPressed,
+    this.nextColor = Colors.blue,
+    this.prevColor = Colors.blue,
   });
 
   @override
@@ -37,11 +41,17 @@ class _FrameState extends State<Frame> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: () => Navigator.pop(context), // Use the callback
+                  onPressed: Navigator.canPop(context) ? () => Navigator.pop(context) : null, // Use the callback
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: widget.prevColor,
+                  ),
                   child: const Text('Previous'),
                 ),
                 ElevatedButton(
                   onPressed: widget.onNextPressed, // Use the callback
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: widget.nextColor,
+                  ),
                   child: const Text('Next'),
                 ),
               ],
