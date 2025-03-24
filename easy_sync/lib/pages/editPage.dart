@@ -1,3 +1,4 @@
+import 'package:easy_sync/tools/frame.dart';
 import 'package:flutter/material.dart';
 
 class EditPage extends StatefulWidget {
@@ -43,40 +44,46 @@ class _EditPageState extends State<EditPage> {
       return const Text(
           "TODO build page to allow the user to review the decisions made, restart to the beginning or go back to the previous question if needed, but if they are happy allow them to move on to the next page which will ask which calendars locations go to.");
     } else {
-      return Column(
-        children: [
-          Expanded(
-            child: QuestionWidget(
-              questionAndAnswerIndices: questions[questionIndex],
-              selectableAnswers: widget.table,
-              callBackFunction: () {
-                setState(() {});
-              },
+      return Frame(
+        title: "Edit Page",
+        onNextPressed: () {
+          Navigator.pushNamed(context, '/login');
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: QuestionWidget(
+                questionAndAnswerIndices: questions[questionIndex],
+                selectableAnswers: widget.table,
+                callBackFunction: () {
+                  setState(() {});
+                },
+              ),
             ),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: FilledButton(
-                    onPressed: () {
-                      setState(() {
-                        questionIndex--;
-                      });
-                    },
-                    child: const Text("Previous question")),
-              ),
-              Expanded(
-                child: FilledButton(
-                    onPressed: () {
-                      setState(() {
-                        questionIndex++;
-                      });
-                    },
-                    child: const Text("Next question")),
-              ),
-            ],
-          ),
-        ],
+            Row(
+              children: [
+                Expanded(
+                  child: FilledButton(
+                      onPressed: () {
+                        setState(() {
+                          questionIndex--;
+                        });
+                      },
+                      child: const Text("Previous question")),
+                ),
+                Expanded(
+                  child: FilledButton(
+                      onPressed: () {
+                        setState(() {
+                          questionIndex++;
+                        });
+                      },
+                      child: const Text("Next question")),
+                ),
+              ],
+            ),
+          ],
+        ),
       );
     }
   }

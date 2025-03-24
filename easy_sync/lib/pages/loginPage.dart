@@ -1,3 +1,4 @@
+import 'package:easy_sync/tools/frame.dart';
 import 'package:easy_sync/tools/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_sync/tools/auth_button.dart';
@@ -94,68 +95,76 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          Text('login Page'),
-          GoogleSignInButton(onSignIn: _handleSignIn,),
-
-          ElevatedButton(
-            onPressed: () async {
-              if(_currentUser != null) {
-                final cal = await _prefs.getSelectedCal();
-                final event = EventStruct(
-                  summary: "Event Title", 
-                  description: "Event Description", 
-                  location: "My house", 
-                  startTime: "2025-03-10T17:00", 
-                  endTime: "2025-03-10T18:00", 
-                  timezone: "America/Denver", 
-                  recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=MO,WE;UNTIL=20250315T000000Z']);
-                final event1 = EventStruct(
-                  summary: "Testing", 
-                  description: "Event Description", 
-                  location: "My house", 
-                  startTime: "2025-03-10T18:00", 
-                  endTime: "2025-03-10T19:00", 
-                  timezone: "America/Denver", 
-                  recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=TU,TH;UNTIL=20250315T000000Z']);
-                final event2 = EventStruct(
-                  summary: "Hello there", 
-                  description: "Event Description", 
-                  location: "My house", 
-                  startTime: "2025-03-10T19:00", 
-                  endTime: "2025-03-10T20:00", 
-                  timezone: "America/Denver", 
-                  recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=F;UNTIL=20250315T000000Z']);
-                
-                final eventList = [event, event1, event2];
-                //createEvent(_currentUser!, await _prefs.getCalendarID(cal), event);
-                createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), eventList);
-              }
-              else {
-                print('No user signed in');
-              }
-            },
-            child: const Text('Create test event'),
-          ),
-          Text("Current Email: $_email"),
-          Text("Current Calendar: $_cal"),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _calList.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(_calList[index]),
-                  onTap: () {
-                    _prefs.setSelectedCal(_calList[index]);
-                    _loadSettings();
-                  },
-                );
+    return Frame(
+      title: 'Login Page',
+      onNextPressed: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No next page')),
+        );
+      },
+      child: Center(
+        child: Column(
+          children: [
+            Text('login Page'),
+            GoogleSignInButton(onSignIn: _handleSignIn,),
+      
+            ElevatedButton(
+              onPressed: () async {
+                if(_currentUser != null) {
+                  final cal = await _prefs.getSelectedCal();
+                  final event = EventStruct(
+                    summary: "Event Title", 
+                    description: "Event Description", 
+                    location: "My house", 
+                    startTime: "2025-03-10T17:00", 
+                    endTime: "2025-03-10T18:00", 
+                    timezone: "America/Denver", 
+                    recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=MO,WE;UNTIL=20250315T000000Z']);
+                  final event1 = EventStruct(
+                    summary: "Testing", 
+                    description: "Event Description", 
+                    location: "My house", 
+                    startTime: "2025-03-10T18:00", 
+                    endTime: "2025-03-10T19:00", 
+                    timezone: "America/Denver", 
+                    recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=TU,TH;UNTIL=20250315T000000Z']);
+                  final event2 = EventStruct(
+                    summary: "Hello there", 
+                    description: "Event Description", 
+                    location: "My house", 
+                    startTime: "2025-03-10T19:00", 
+                    endTime: "2025-03-10T20:00", 
+                    timezone: "America/Denver", 
+                    recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=F;UNTIL=20250315T000000Z']);
+                  
+                  final eventList = [event, event1, event2];
+                  //createEvent(_currentUser!, await _prefs.getCalendarID(cal), event);
+                  createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), eventList);
+                }
+                else {
+                  print('No user signed in');
+                }
               },
+              child: const Text('Create test event'),
             ),
-          ),
-        ],
+            Text("Current Email: $_email"),
+            Text("Current Calendar: $_cal"),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _calList.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(_calList[index]),
+                    onTap: () {
+                      _prefs.setSelectedCal(_calList[index]);
+                      _loadSettings();
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

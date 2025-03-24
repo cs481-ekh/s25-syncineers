@@ -80,36 +80,43 @@ class _InputPageState extends State<InputPage> {
     return rows;
   } 
 
+  @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          IconButton(
-            onPressed: getFile, 
-            icon: const Icon(Icons.file_open, color: Colors.blue, size: 100.0),
-          ),
-          if (fileName != null)
-          SizedBox(
-            height: 250,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'File uploaded: $fileName',
-                  textAlign: TextAlign.center,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Frame(title: 'edit', child: EditPage(rows))));
-                  }, 
-                  child: const Text("Edit data")
-                )
-              ],
-            )
-          ),
-        ],
+    return Frame(
+      title: 'Input',
+      onNextPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => EditPage(rows)));
+      },
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            IconButton(
+              onPressed: getFile, 
+              icon: const Icon(Icons.file_open, color: Colors.blue, size: 100.0),
+            ),
+            if (fileName != null)
+            SizedBox(
+              height: 250,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'File uploaded: $fileName',
+                    textAlign: TextAlign.center,
+                  ),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     Navigator.push(context, MaterialPageRoute(builder: (context) => Frame(title: 'edit', child: EditPage(rows))));
+                  //   }, 
+                  //   child: const Text("Edit data")
+                  // )
+                ],
+              )
+            ),
+          ],
+        ),
       ),
     );
   }
