@@ -45,14 +45,14 @@ class _FrameState extends State<Frame> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: widget.prevColor,
                   ),
-                  child: const Text('Previous'),
+                  child: const Text('Previous Page'),
                 ),
                 ElevatedButton(
                   onPressed: widget.onNextPressed, // Use the callback
                   style: ElevatedButton.styleFrom(
                     backgroundColor: widget.nextColor,
                   ),
-                  child: const Text('Next'),
+                  child: const Text('Next Page'),
                 ),
               ],
             ),
