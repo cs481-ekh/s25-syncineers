@@ -121,6 +121,26 @@ class Dataset {
     return information[exampleIndex][index];
   }
 
+  List<List<String>> getMeetingDays(int columnIndex) {
+    List<List<String>> recurringDaysRows = [];
+
+    for (int i = 0; i < information.length; i++) { // For each row/class
+      List<String> daysForRow = [];
+
+      if (columnIndex < information[i].length) {
+        String cellData = information[i][columnIndex];
+        if (cellData != "") {
+          List<String> parts = cellData.split(RegExp(r'[,\s/]')).map((e) => e.trim()).toList();
+          daysForRow.addAll(parts.where((day) => day.isNotEmpty));
+          recurringDaysRows.add(daysForRow);
+        } else {
+          recurringDaysRows.add([]);
+        }
+      }
+    }
+    return recurringDaysRows;
+  }
+
   void nextExample() {
     if (information.isEmpty || information.length <= 2) {
       return;
