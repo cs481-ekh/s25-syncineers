@@ -1,3 +1,4 @@
+import 'package:easy_sync/tools/event_struct.dart';
 import 'package:easy_sync/tools/frame.dart';
 import 'package:flutter/material.dart';
 
@@ -13,29 +14,31 @@ class EditPage extends StatefulWidget {
 }
 
 class QuestionAndAnswers {
-  String key;
   String question;
   List<int> answerIndices;
 
-  QuestionAndAnswers(this.key, this.question) : answerIndices = [];
+  QuestionAndAnswers(this.question) : answerIndices = [];
 }
 
 class _EditPageState extends State<EditPage> {
   int questionIndex = 0;
 
-  List<QuestionAndAnswers> questions = [
-    QuestionAndAnswers("summaryColumns", "How is each event title constructed"),
-    QuestionAndAnswers("locationColumns", "Where is the Location"),
-    QuestionAndAnswers("", "Which column contains the first day"),
-    QuestionAndAnswers("", "Which column contains the last day"),
-    QuestionAndAnswers("startTimeColumns", "Which column contains the start time"),
-    QuestionAndAnswers("endTimeColumns", "Which column contains the end time"),
-    QuestionAndAnswers(
-        "recurrenceColumns", "Which column contains which days of the week are repeated"),
-  ];
+  Map<String,QuestionAndAnswers> questions = {
+    "summary" : QuestionAndAnswers("How is each event title constructed"),
+    "location" : QuestionAndAnswers("Where is the Location"),
+    "first day" : QuestionAndAnswers("Which column contains the first day"),
+    "last day" : QuestionAndAnswers("Which column contains the last day"),
+    "startTime" : QuestionAndAnswers("Which column contains the start time"),
+    "endTime" : QuestionAndAnswers("Which column contains the end time"),
+    "recurrenceRules" : QuestionAndAnswers("Which column contains which days of the week are repeated"),
+  };
+
+  late List<String> questionKeys;
 
   @override
   Widget build(BuildContext context) {
+    questionKeys = questions.keys.toList();
+
     if (questionIndex < 0) {
       questionIndex = 0;
     }
@@ -53,7 +56,7 @@ class _EditPageState extends State<EditPage> {
           children: [
             Expanded(
               child: QuestionWidget(
-                questionAndAnswerIndices: questions[questionIndex],
+                questionAndAnswerIndices: questions[questionKeys[questionIndex]],
                 selectableAnswers: widget.table,
                 callBackFunction: () {
                   setState(() {});
@@ -101,6 +104,28 @@ class Dataset {
     }
 
     return information[0].length;
+  }
+
+  List<String> getColumnsFromRow(int row, List<int> columns) {
+    return [];// TODO fixme
+  }
+
+  List<EventStruct> getEvents(Map<String, QuestionAndAnswers> input) {
+    List<EventStruct> output = [];
+
+    for (var i = 1; i < information.length; i++) {
+      output.add(EventStruct(
+        summary: parseSummary(getColumnsFromRow(i, input["summary"]!.answerIndices)),
+        description: parseDescription(getColumnsFromRow(i, input["description"]!.answerIndices)),
+        location: parseLocation(getColumnsFromRow(i, input["location"]!.answerIndices)),
+        startTime: parseStartTime(getColumnsFromRow(i, input["startTime"]!.answerIndices)),
+        endTime: parseEndTime(getColumnsFromRow(i, input["endTime"]!.answerIndices)),
+        timezone: parseTimezone(getColumnsFromRow(i, input["timezone"]!.answerIndices)),
+        recurrenceRules: parseRecurrenceRules(getColumnsFromRow(i, input["recurrenceRules"]!.answerIndices)),
+      ));
+    }
+
+    return output;
   }
 
   String getTitle(int index) {
@@ -226,4 +251,40 @@ class QuestionWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+
+String parseSummary(List<String> input) {
+  // TODO fixme
+  return "fixme";
+}
+
+String parseDescription(List<String> input) {
+  // TODO fixme
+  return "fixme";
+}
+
+String parseLocation(List<String> input) {
+  // TODO fixme
+  return "fixme";
+}
+
+String parseStartTime(List<String> input) {
+  // TODO fixme
+  return "fixme";
+}
+
+String parseEndTime(List<String> input) {
+  // TODO fixme
+  return "fixme";
+}
+
+String parseTimezone(List<String> input) {
+  // TODO fixme
+  return "fixme";
+}
+
+List<String> parseRecurrenceRules(List<String> input) {
+  // TODO fixme
+  return ["fixme"];
 }
