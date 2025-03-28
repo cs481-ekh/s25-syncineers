@@ -41,6 +41,7 @@ class _EditPageState extends State<EditPage> {
     }
 
     if (questionIndex >= questions.length) {
+      
       return const Text(
           "TODO build page to allow the user to review the decisions made, restart to the beginning or go back to the previous question if needed, but if they are happy allow them to move on to the next page which will ask which calendars locations go to.");
     } else {
@@ -122,7 +123,7 @@ class Dataset {
   }
 
   List<List<String>> getMeetingDays(int columnIndex) {
-    List<List<String>> recurringDaysRows = [];
+    List<List<String>> recurringDaysRows = [[]];
 
     for (int i = 0; i < information.length; i++) { // For each row/class
       List<String> daysForRow = [];
@@ -139,6 +140,28 @@ class Dataset {
       }
     }
     return recurringDaysRows;
+  }
+
+  List<String> getStartAndEndDate(int i, int columnIndex) {
+    List<String> dates = information[i][columnIndex].trim().split('-');
+
+    String startDate = dates[0];
+    List<String> dateParts = startDate.trim().split('/');
+
+    String startMonth = dateParts[0];
+    String startDay = dateParts[1];
+    String startYear = dateParts[2];
+
+    String endDate = dates[1];
+    dateParts = endDate.trim().split('/');
+
+    String endMonth = dateParts[0];
+    String endDay = dateParts[1];
+    String endYear = dateParts[2];
+
+    print("$startYear-$startMonth-$startDay, $endYear-$endMonth-$endDay");
+
+    return ["$startYear-$startMonth-$startDay", "$endYear-$endMonth-$endDay"];
   }
 
   void nextExample() {
