@@ -16,9 +16,8 @@ class EditPage extends StatefulWidget {
 
 class _EditPageState extends State<EditPage> {
   final Map<String, QuestionAndAnswers> questions = {
-    "example": QuestionAndAnswers("This is some question"),
     // "summary": QuestionAndAnswers("How is each event title constructed"),
-    // "location" : QuestionAndAnswers("Where is the event Located"),
+    "location": QuestionAndAnswers("Where is the event Located"),
     // "first day" : QuestionAndAnswers("Which column contains the first day"),
     // "last day" : QuestionAndAnswers("Which column contains the last day"),
     // "startTime" : QuestionAndAnswers("Which column contains the start time"),
@@ -167,9 +166,9 @@ class Dataset {
           MapEntry(key, getColumnsFromRow(i, value.answerIndices)));
 
       output.add(EventStruct(
-        summary: parseSummary(answers["example"]!),
-        description: parseDescription(answers["example"]!, answers["example"]!),
-        location: parseLocation([]),
+        summary: parseSummary([]),
+        description: parseDescription([]),
+        location: parseLocation(answers["location"]!),
         startTime: parseStartTime([]),
         endTime: parseEndTime([]),
         timezone: parseTimezone([]),
@@ -235,10 +234,9 @@ class QuestionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String example = "";
-    for (var index in questionAndAnswerIndices.answerIndices) {
-      example += "${selectableAnswers.getExample(index)} ";
-    }
+    String example = questionAndAnswerIndices.answerIndices
+        .map((index) => selectableAnswers.getExample(index))
+        .join(" ");
 
     return Card(
       child: Column(
@@ -246,9 +244,9 @@ class QuestionWidget extends StatelessWidget {
           Text(questionAndAnswerIndices.question),
           Row(
             children: [
-              previousExample(),
+              previousExampleButton(),
               exampleText(example),
-              nextExample(),
+              nextExampleButton(),
             ],
           ),
           selectedAnswersWidget(),
@@ -300,7 +298,7 @@ class QuestionWidget extends StatelessWidget {
     );
   }
 
-  FilledButton nextExample() {
+  FilledButton nextExampleButton() {
     return FilledButton(
         onPressed: () {
           callBackFunction();
@@ -317,7 +315,7 @@ class QuestionWidget extends StatelessWidget {
     ));
   }
 
-  FilledButton previousExample() {
+  FilledButton previousExampleButton() {
     return FilledButton(
         onPressed: () {
           selectableAnswers.previousExample();
@@ -332,14 +330,15 @@ String parseSummary(List<String> input) {
   return "fixme";
 }
 
-String parseDescription(List<String> input1, List<String> input2) {
+String parseDescription(List<String> input) {
   // TODO fixme
   return "fixme";
 }
 
 String parseLocation(List<String> input) {
-  // TODO fixme
-  return "fixme";
+  String output = input.isEmpty ? "no location given" : input.join(" ").trim();
+  output = (output == "") ? "no location given" : output;
+  return output;
 }
 
 String parseStartTime(List<String> input) {
