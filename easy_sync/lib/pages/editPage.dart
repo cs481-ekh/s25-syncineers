@@ -1,3 +1,5 @@
+import 'package:easy_sync/pages/loginPage.dart';
+import 'package:easy_sync/tools/event_struct.dart';
 import 'package:easy_sync/tools/frame.dart';
 import 'package:flutter/material.dart';
 
@@ -12,27 +14,19 @@ class EditPage extends StatefulWidget {
   _EditPageState createState() => _EditPageState();
 }
 
-class QuestionAndAnswers {
-  String key;
-  String question;
-  List<int> answerIndices;
-
-  QuestionAndAnswers(this.key, this.question) : answerIndices = [];
-}
-
 class _EditPageState extends State<EditPage> {
+  final Map<String, QuestionAndAnswers> questions = {
+    "example": QuestionAndAnswers("This is some question"),
+    // "summary": QuestionAndAnswers("How is each event title constructed"),
+    // "location" : QuestionAndAnswers("Where is the event Located"),
+    // "first day" : QuestionAndAnswers("Which column contains the first day"),
+    // "last day" : QuestionAndAnswers("Which column contains the last day"),
+    // "startTime" : QuestionAndAnswers("Which column contains the start time"),
+    // "endTime" : QuestionAndAnswers("Which column contains the end time"),
+    // "recurrenceRules" : QuestionAndAnswers("Which column contains which days of the week are repeated"),
+  };
   int questionIndex = 0;
-
-  List<QuestionAndAnswers> questions = [
-    QuestionAndAnswers("summaryColumns", "How is each event title constructed"),
-    QuestionAndAnswers("locationColumns", "Where is the Location"),
-    QuestionAndAnswers("", "Which column contains the first day"),
-    QuestionAndAnswers("", "Which column contains the last day"),
-    QuestionAndAnswers("startTimeColumns", "Which column contains the start time"),
-    QuestionAndAnswers("endTimeColumns", "Which column contains the end time"),
-    QuestionAndAnswers(
-        "recurrenceColumns", "Which column contains which days of the week are repeated"),
-  ];
+  late List<String> questionKeys = questions.keys.toList();
 
   @override
   Widget build(BuildContext context) {
@@ -40,53 +34,105 @@ class _EditPageState extends State<EditPage> {
       questionIndex = 0;
     }
 
-    if (questionIndex >= questions.length) {
-      return const Text(
-          "TODO build page to allow the user to review the decisions made, restart to the beginning or go back to the previous question if needed, but if they are happy allow them to move on to the next page which will ask which calendars locations go to.");
-    } else {
-      return Frame(
-        title: "Edit Page",
-        onNextPressed: () {
-          Navigator.pushNamed(context, '/login');
-        },
-        child: Column(
+    return Frame(
+      title: "Edit Page",
+      onNextPressed: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    LoginPage(widget.table.getEvents(questions))));
+      },
+      child: (questionIndex >= questions.length)
+          ? questionsComplete()
+          : askCurrentQuestion(),
+    );
+  }
+
+  Column askCurrentQuestion() {
+    return Column(
+      children: [
+        Expanded(
+          child: QuestionWidget(
+            questionAndAnswerIndices: questions[questionKeys[questionIndex]]!,
+            selectableAnswers: widget.table,
+            callBackFunction: () {
+              setState(() {});
+            },
+          ),
+        ),
+        Row(
+          children: [
+            previousQuestion(),
+            nextQuestion(),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Expanded nextQuestion() {
+    return Expanded(
+      child: FilledButton(
+          onPressed: () {
+            setState(() {
+              questionIndex++;
+            });
+          },
+          child: const Text("Next question")),
+    );
+  }
+
+  Expanded previousQuestion() {
+    return Expanded(
+      child: FilledButton(
+          onPressed: () {
+            setState(() {
+              questionIndex--;
+            });
+          },
+          child: const Text("Previous question")),
+    );
+  }
+
+  Column questionsComplete() {
+    return Column(
+      children: [
+        Row(
           children: [
             Expanded(
-              child: QuestionWidget(
-                questionAndAnswerIndices: questions[questionIndex],
-                selectableAnswers: widget.table,
-                callBackFunction: () {
-                  setState(() {});
-                },
-              ),
+              child: FilledButton(
+                  onPressed: () {
+                    setState(() {
+                      questionIndex = 0;
+                    });
+                  },
+                  child: const Text("First question")),
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton(
-                      onPressed: () {
-                        setState(() {
-                          questionIndex--;
-                        });
-                      },
-                      child: const Text("Previous question")),
-                ),
-                Expanded(
-                  child: FilledButton(
-                      onPressed: () {
-                        setState(() {
-                          questionIndex++;
-                        });
-                      },
-                      child: const Text("Next question")),
-                ),
-              ],
+            Expanded(
+              child: FilledButton(
+                  onPressed: () {
+                    setState(() {
+                      questionIndex = questions.length - 1;
+                    });
+                  },
+                  child: const Text("Previous question")),
             ),
           ],
         ),
-      );
-    }
+        const Expanded(
+            child: Text(
+                "That was the last question. You can move on to the next page.")),
+      ],
+    );
   }
+}
+
+class QuestionAndAnswers {
+  String question;
+  List<int> answerIndices;
+
+  QuestionAndAnswers(this.question) : answerIndices = [];
 }
 
 class Dataset {
@@ -101,6 +147,37 @@ class Dataset {
     }
 
     return information[0].length;
+  }
+
+  List<String> getColumnsFromRow(int row, List<int> columns) {
+    List<String> output = [];
+
+    for (var column in columns) {
+      output.add(information[row][column]);
+    }
+
+    return output;
+  }
+
+  List<EventStruct> getEvents(Map<String, QuestionAndAnswers> input) {
+    List<EventStruct> output = [];
+
+    for (var i = 1; i < information.length; i++) {
+      Map<String, List<String>> answers = input.map((key, value) =>
+          MapEntry(key, getColumnsFromRow(i, value.answerIndices)));
+
+      output.add(EventStruct(
+        summary: parseSummary(answers["example"]!),
+        description: parseDescription(answers["example"]!, answers["example"]!),
+        location: parseLocation([]),
+        startTime: parseStartTime([]),
+        endTime: parseEndTime([]),
+        timezone: parseTimezone([]),
+        recurrenceRules: parseRecurrenceRules([]),
+      ));
+    }
+
+    return output;
   }
 
   String getTitle(int index) {
@@ -169,61 +246,118 @@ class QuestionWidget extends StatelessWidget {
           Text(questionAndAnswerIndices.question),
           Row(
             children: [
-              FilledButton(
-                  onPressed: () {
-                    selectableAnswers.previousExample();
-                    callBackFunction();
-                  },
-                  child: const Text("Previous example")),
-              Expanded(
-                  child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Example output: $example"),
-              )),
-              FilledButton(
-                  onPressed: () {
-                    callBackFunction();
-                    selectableAnswers.nextExample();
-                  },
-                  child: const Text("Next example")),
+              previousExample(),
+              exampleText(example),
+              nextExample(),
             ],
           ),
-          Expanded(
-            child: Card(
-              color: cardShade,
-              child: ListView.builder(
-                  itemCount: questionAndAnswerIndices.answerIndices.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                        title: Text(selectableAnswers.getTitle(
-                            questionAndAnswerIndices.answerIndices[index])),
-                        onTap: () async {
-                          questionAndAnswerIndices.answerIndices
-                              .removeAt(index);
-                          callBackFunction();
-                        });
-                  }),
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Card(
-              color: cardShade,
-              child: ListView.builder(
-                  itemCount: selectableAnswers.numColumns(),
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                        title: Text(
-                            "${selectableAnswers.getTitle(index)} | ${selectableAnswers.getExample(index)}"),
-                        onTap: () async {
-                          questionAndAnswerIndices.answerIndices.add(index);
-                          callBackFunction();
-                        });
-                  }),
-            ),
-          ),
+          selectedAnswersWidget(),
+          selectableAnswersWidget(),
         ],
       ),
     );
   }
+
+  Expanded selectableAnswersWidget() {
+    var flex = 2;
+    var numColumns = selectableAnswers.numColumns();
+
+    someText(index) => Text(
+        "${selectableAnswers.getTitle(index)} | ${selectableAnswers.getExample(index)}");
+    someAction(index) => questionAndAnswerIndices.answerIndices.add(index);
+
+    return interactiveList(flex, numColumns, someText, someAction);
+  }
+
+  Expanded selectedAnswersWidget() {
+    var flex = 1;
+    var numColumns = questionAndAnswerIndices.answerIndices.length;
+
+    someText(index) => Text(selectableAnswers
+        .getTitle(questionAndAnswerIndices.answerIndices[index]));
+    someAction(index) => questionAndAnswerIndices.answerIndices.removeAt(index);
+
+    return interactiveList(flex, numColumns, someText, someAction);
+  }
+
+  Expanded interactiveList(int flexPower, int numColumns,
+      Text Function(int) someText, void Function(int) someAction) {
+    return Expanded(
+      flex: flexPower,
+      child: Card(
+        color: cardShade,
+        child: ListView.builder(
+            itemCount: numColumns,
+            itemBuilder: (context, index) {
+              return ListTile(
+                  title: someText(index),
+                  onTap: () async {
+                    someAction(index);
+                    callBackFunction();
+                  });
+            }),
+      ),
+    );
+  }
+
+  FilledButton nextExample() {
+    return FilledButton(
+        onPressed: () {
+          callBackFunction();
+          selectableAnswers.nextExample();
+        },
+        child: const Text("Next example"));
+  }
+
+  Expanded exampleText(String example) {
+    return Expanded(
+        child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text("Example output: $example"),
+    ));
+  }
+
+  FilledButton previousExample() {
+    return FilledButton(
+        onPressed: () {
+          selectableAnswers.previousExample();
+          callBackFunction();
+        },
+        child: const Text("Previous example"));
+  }
+}
+
+String parseSummary(List<String> input) {
+  // TODO fixme
+  return "fixme";
+}
+
+String parseDescription(List<String> input1, List<String> input2) {
+  // TODO fixme
+  return "fixme";
+}
+
+String parseLocation(List<String> input) {
+  // TODO fixme
+  return "fixme";
+}
+
+String parseStartTime(List<String> input) {
+  // TODO fixme
+  return "fixme";
+}
+
+String parseEndTime(List<String> input) {
+  // TODO fixme
+  return "fixme";
+}
+
+String parseTimezone(List<String> input) {
+  // TODO fixme
+  return "fixme";
+}
+
+List<String> parseRecurrenceRules(List<String> input) {
+  // TODO fixme
+  return ["fixme"];
 }
