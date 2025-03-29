@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LoginPage extends StatefulWidget {
  
 
-  const LoginPage({super.key});
+  const LoginPage(List<EventStruct> events, {super.key});
 
   @override
   _LoginPageState createState() => _LoginPageState();
