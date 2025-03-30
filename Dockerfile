@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     unzip \
-    xz-utils
+    xz-utils \
+    nodejs \
+    npm
 
 # Install Flutter
 RUN git clone https://github.com/flutter/flutter.git /flutter && \
@@ -19,12 +21,18 @@ RUN git clone https://github.com/flutter/flutter.git /flutter && \
 # Set Flutter environmental variable
 ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
 
+# RUN useradd -m myuser
+# USER myuser
+
 WORKDIR /app
 
 COPY easy_sync/pubspec.* ./
 RUN flutter pub get
 
 COPY easy_sync/ /app/easy_sync
+
+RUN npm install -g serve
+
 
 COPY build.ps1 /build.ps1
 
@@ -35,10 +43,9 @@ RUN pwsh -ExecutionPolicy Bypass -File /build.ps1
 # FROM nginx:stable-alpine
 # COPY --from=build /app/easy_sync/build/web /usr/share/nginx/html
 
-FROM node:18-alpine AS runtime
-WORKDIR /app
-RUN npm install -g serve
-COPY --from=build /app/easy_sync/build/web /app/web
+# FROM node:18-alpine AS runtime
+# WORKDIR /app
+#COPY --from=build /app/easy_sync/build/web /app/web
 
 
 EXPOSE 7357
