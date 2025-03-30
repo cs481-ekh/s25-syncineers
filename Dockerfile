@@ -1,14 +1,17 @@
-FROM debian:stable-slim AS build
+FROM mcr.microsoft.com/powershell:lts-debian-11 AS build
 
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     unzip \
-    xz-utils
+    xz-utils 
 
-# Install flutter
+# Install Flutter
 RUN git clone https://github.com/flutter/flutter.git /flutter && \
     /flutter/bin/flutter --version
+
+RUN /flutter/bin/flutter config
 
 # Set Flutter environmental variable
 ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
@@ -17,16 +20,15 @@ WORKDIR /app
 
 COPY easy_sync/pubspec.* ./
 RUN flutter pub get
-COPY easy_sync/ .
 
-RUN flutter build web --release
+COPY easy_sync/ /app/easy_sync
 
-# Use an official NGINX image to serve the web app
-FROM nginx:stable-alpine
+RUN npm install -g serve
 
-# Copy the built web files from the build stage to NGINX's html directory
-COPY --from=build /app/build/web /usr/share/nginx/html
+COPY build.ps1 /build.ps1
 
-EXPOSE 80
-# Start NGINX
-CMD ["nginx", "-g", "daemon off;"]
+# Run pwsh script
+RUN pwsh -ExecutionPolicy Bypass -File /build.ps1
+
+EXPOSE 7357
+CMD ["serve", "-s", "/app/easy_sync/build/web", "--listen", "7357"]
