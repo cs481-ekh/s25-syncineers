@@ -16,7 +16,7 @@ services:
     # the port numbers as needed. The first number is the host port and the second
     # is the port inside the container.
     ports:
-      - "${HOST_PORT:-7357}:3000"
+      - "${HOST_PORT:-7357}:7357"
 
     # The commented out section below is an example of how to define a PostgreSQL
     # database that your application can use. `depends_on` tells Docker Compose to
