@@ -9,8 +9,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
  
+ final List<EventStruct> events;
 
-  const LoginPage(List<EventStruct> events, {super.key});
+  const LoginPage(this.events, {super.key});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -20,18 +21,10 @@ class _LoginPageState extends State<LoginPage> {
 
   final SharedPreferencesManager _prefs = SharedPreferencesManager();
 
-  //  final GoogleSignIn _googleSignIn = GoogleSignIn(
-  //   scopes: ['email', 'https://www.googleapis.com/auth/calendar'],
-  // );
-
   GoogleSignInAccount? _currentUser;
   
-  //store local value for shared preferences
-  //String _email = ''; 
-  String _cal = '';
-  List<String> _calList = [];
- // late GoogleSignInAccount _currentUser;
-
+  String _cal = ''; //selected calendar
+  List<String> _calList = []; //list of user's calendars
 
   //store local values for user data
   String _displayName = 'displayName';
@@ -43,23 +36,17 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    _prefs.clearUser();
     _loadSettings();
   }
 
   //load changes in shared preferences
   void _loadSettings() async  {
-    print('Loading settings');
+
+
     final userValues = await _prefs.getUserValues();
     final calendar = await _prefs.getSelectedCal();
     final calendarList = await _prefs.getCalendarListKey();
-
-    // final userValues = await _prefs.getUserValues();
-    // final displayName = userValues['displayName'] ?? '';
-    // final email = userValues['email'] ?? '';
-    // final id = userValues['id'] ?? '';
-    // final photoUrl = userValues['photoUrl'] ?? '';
-    // final serverAuthCode = userValues['serverAuthCode'] ?? '';
-
     
       setState(() {
 
@@ -71,7 +58,6 @@ class _LoginPageState extends State<LoginPage> {
 
         _cal = calendar;
         _calList = calendarList;
-      //  _calList = List<String>.from(calendarList as Iterable<dynamic>);
       });
 
       if (_currentUser != null) {
@@ -83,7 +69,6 @@ class _LoginPageState extends State<LoginPage> {
     }
     }
     
-
   void _handleSignIn(GoogleSignInAccount? account) {
     setState(() {
       _currentUser = account;
@@ -103,70 +88,97 @@ class _LoginPageState extends State<LoginPage> {
         );
       },
       nextColor: Colors.grey,
-      child: Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('login Page'),
-            GoogleSignInButton(onSignIn: _handleSignIn,),
-      
-            ElevatedButton(
-              onPressed: () async {
-                if(_currentUser != null) {
-                  final cal = await _prefs.getSelectedCal();
-                  final event = EventStruct(
-                    summary: "Event Title", 
-                    description: "Event Description", 
-                    location: "My house", 
-                    startTime: "2025-03-10T17:00", 
-                    endTime: "2025-03-10T18:00", 
-                    timezone: "America/Denver", 
-                    recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=MO,WE;UNTIL=20250315T000000Z']);
-                  final event1 = EventStruct(
-                    summary: "Testing", 
-                    description: "Event Description", 
-                    location: "My house", 
-                    startTime: "2025-03-10T18:00", 
-                    endTime: "2025-03-10T19:00", 
-                    timezone: "America/Denver", 
-                    recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=TU,TH;UNTIL=20250315T000000Z']);
-                  final event2 = EventStruct(
-                    summary: "Hello there", 
-                    description: "Event Description", 
-                    location: "My house", 
-                    startTime: "2025-03-10T19:00", 
-                    endTime: "2025-03-10T20:00", 
-                    timezone: "America/Denver", 
-                    recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=F;UNTIL=20250315T000000Z']);
-                  
-                  final eventList = [event, event1, event2];
-                  //createEvent(_currentUser!, await _prefs.getCalendarID(cal), event);
-                  createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), eventList);
-                }
-                else {
-                  print('No user signed in');
-                }
-              },
-              child: const Text('Create test event'),
+            Row(
+              children: [
+                Expanded(child: Center(child: GoogleSignInButton(onSignIn: _handleSignIn))),
+              Expanded(
+                child: Center(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if(_currentUser != null) {
+                      final cal = await _prefs.getSelectedCal();
+                      final event = EventStruct(
+                        summary: "Event Title", 
+                        description: "Event Description", 
+                        location: "My house", 
+                        startTime: "2025-03-10T17:00", 
+                        endTime: "2025-03-10T18:00", 
+                        timezone: "America/Denver", 
+                        recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=MO,WE;UNTIL=20250315T000000Z']);
+                      final event1 = EventStruct(
+                        summary: "Testing", 
+                        description: "Event Description", 
+                        location: "My house", 
+                        startTime: "2025-03-10T18:00", 
+                        endTime: "2025-03-10T19:00", 
+                        timezone: "America/Denver", 
+                        recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=TU,TH;UNTIL=20250315T000000Z']);
+                      final event2 = EventStruct(
+                        summary: "Hello there", 
+                        description: "Event Description", 
+                        location: "My house", 
+                        startTime: "2025-03-10T19:00", 
+                        endTime: "2025-03-10T20:00", 
+                        timezone: "America/Denver", 
+                        recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=F;UNTIL=20250315T000000Z']);
+                      
+                      final eventList = [event, event1, event2];
+                      //createEvent(_currentUser!, await _prefs.getCalendarID(cal), event);
+                      createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), eventList);
+                    }
+                    else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('No user signed in')),
+                      );
+                    }
+                  },
+                  child: const Text('Create Events'),
+                ),
+                            ),
+              ),
+              ]
             ),
-            Text("Current Email: $_email"),
-            Text("Current Calendar: $_cal"),
+            const SizedBox(height: 20),
+
+            _cal.isNotEmpty ? 
+              Text("Current Calendar: $_cal", style: const TextStyle(fontSize: 16)) 
+              : const Text("No calendar selected", style: TextStyle(fontSize: 16)),
+
+            const SizedBox(height: 10),
+            
             Expanded(
+              flex: 3,
               child: ListView.builder(
                 itemCount: _calList.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(_calList[index]),
-                    onTap: () {
-                      _prefs.setSelectedCal(_calList[index]);
-                      _loadSettings();
-                    },
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    child: ListTile(
+                      title: Text(_calList[index]),
+                      onTap: () {
+                        _prefs.setSelectedCal(_calList[index]);
+                        _loadSettings();
+                      },
+                    ),
                   );
                 },
               ),
             ),
+
+            const SizedBox(height: 20),
+
+            
           ],
-        ),
-      ),
-    );
+        ),  
+             
+          
+        )
+
+      );
   }
 }

@@ -36,6 +36,9 @@ class SharedPreferencesManager {
     prefs.remove(idKey);
     prefs.remove(photoUrlKey);
     prefs.remove(serverAuthCodeKey);
+    prefs.remove(calendarNameKey);
+    prefs.remove(calendarIDKey);
+    prefs.remove(selectedCalKey);
   }
 
     Future<Map<String, String>> getUserValues() async {

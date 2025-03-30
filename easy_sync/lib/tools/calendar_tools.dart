@@ -30,9 +30,7 @@ import 'event_struct.dart';
       List<String> calendarSummaries = [];
       // _prefs.setUserCalendarSets(calendarList.items?.toString());
 
-      print('Calendar List:'); 
       for (var item in calendarList.items ?? []) {
-        print('${item.summary} (${item.id})');
         calendarSummaries.add(item.summary!);
         calendarIds.add(item.id!);
       }

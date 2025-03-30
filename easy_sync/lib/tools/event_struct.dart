@@ -16,4 +16,17 @@ class EventStruct {
     required this.timezone,
     required this.recurrenceRules,
   });
+
+  @override
+  String toString() {
+    return 'EventStruct('
+        'summary: $summary, '
+        'description: $description, '
+        'location: $location, '
+        'startTime: $startTime, '
+        'endTime: $endTime, '
+        'timezone: $timezone, '
+        'recurrenceRules: $recurrenceRules)';
+  }
+
 }
