@@ -166,7 +166,7 @@ class Dataset {
           MapEntry(key, getColumnsFromRow(i, value.answerIndices)));
 
       output.add(EventStruct(
-        summary: parseSummary([]),
+        summary: parseSummary(answers["summary"]!),
         description: parseDescription([]),
         location: parseLocation(answers["location"]!),
         startTime: parseStartTime([]),
