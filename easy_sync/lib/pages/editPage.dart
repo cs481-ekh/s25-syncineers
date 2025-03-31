@@ -16,7 +16,7 @@ class EditPage extends StatefulWidget {
 
 class _EditPageState extends State<EditPage> {
   final Map<String, QuestionAndAnswers> questions = {
-    // "summary": QuestionAndAnswers("How is each event title constructed"),
+    "summary": QuestionAndAnswers("How is each event title constructed"),
     "location": QuestionAndAnswers("Where is the event Located"),
     // "first day" : QuestionAndAnswers("Which column contains the first day"),
     // "last day" : QuestionAndAnswers("Which column contains the last day"),
@@ -326,8 +326,9 @@ class QuestionWidget extends StatelessWidget {
 }
 
 String parseSummary(List<String> input) {
-  // TODO fixme
-  return "fixme";
+  String output = input.isEmpty ? "no title given" : input.join(" ").trim();
+  output = (output == "") ? "no title given" : output;
+  return output;
 }
 
 String parseDescription(List<String> input) {
