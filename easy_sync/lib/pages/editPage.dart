@@ -18,6 +18,7 @@ class _EditPageState extends State<EditPage> {
   final Map<String, QuestionAndAnswers> questions = {
     // "summary": QuestionAndAnswers("How is each event title constructed"),
     "location": QuestionAndAnswers("Where is the event Located"),
+    "description": QuestionAndAnswers("While not needed. If you want to add a description, then you can build one here."),
     // "first day" : QuestionAndAnswers("Which column contains the first day"),
     // "last day" : QuestionAndAnswers("Which column contains the last day"),
     // "startTime" : QuestionAndAnswers("Which column contains the start time"),
@@ -167,7 +168,7 @@ class Dataset {
 
       output.add(EventStruct(
         summary: parseSummary([]),
-        description: parseDescription([]),
+        description: parseDescription(answers["description"]!),
         location: parseLocation(answers["location"]!),
         startTime: parseStartTime([]),
         endTime: parseEndTime([]),
@@ -331,8 +332,7 @@ String parseSummary(List<String> input) {
 }
 
 String parseDescription(List<String> input) {
-  // TODO fixme
-  return "fixme";
+  return input.join(" ");
 }
 
 String parseLocation(List<String> input) {
