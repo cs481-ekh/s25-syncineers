@@ -20,10 +20,10 @@ class _EditPageState extends State<EditPage> {
     "location": QuestionAndAnswers("Where is the event Located"),
     "description": QuestionAndAnswers("While not needed. If you want to add a description, then you can build one here."),
     "first day" : QuestionAndAnswers("Which column contains the first day"),
-    // "last day" : QuestionAndAnswers("Which column contains the last day"),
+    "last day" : QuestionAndAnswers("Which column contains the last day"),
     "startTime" : QuestionAndAnswers("Which column contains the start time"), 
     "endTime" : QuestionAndAnswers("Which column contains the end time"),
-    // "recurrenceRules" : QuestionAndAnswers("Which column contains which days of the week are repeated"),
+    "recurrenceRules" : QuestionAndAnswers("Which column contains which days of the week are repeated"),
   };
   int questionIndex = 0;
   late List<String> questionKeys = questions.keys.toList();
@@ -173,7 +173,7 @@ class Dataset {
         startTime: parseTime([answers["first day"]!, answers["startTime"]!], true),
         endTime: parseTime([answers["first day"]!, answers["startTime"]!], false),
         timezone: parseTimezone([]),
-        recurrenceRules: parseRecurrenceRules([]),
+        recurrenceRules: parseRecurrenceRules([answers["recurrenceRules"]!, answers["last day"]!]),
       ));
     }
 
@@ -397,25 +397,14 @@ String parseStartDate(List<String> input) {
   return "$startYear-$startMonth-$startDay";
 }
 
-// List<List<String>> getMeetingDays(int columnIndex) {
-//     List<List<String>> recurringDaysRows = [[]];
-
-//     for (int i = 0; i < information.length; i++) { // For each row/class
-//       List<String> daysForRow = [];
-
-//       if (columnIndex < information[i].length) {
-//         String cellData = information[i][columnIndex];
-//         if (cellData != "") {
-//           List<String> parts = cellData.split(RegExp(r'[,\s/]')).map((e) => e.trim()).toList();
-//           daysForRow.addAll(parts.where((day) => day.isNotEmpty));
-//           recurringDaysRows.add(daysForRow);
-//         } else {
-//           recurringDaysRows.add([]);
-//         }
-//       }
-//     }
-//     return recurringDaysRows;
-//   }
+List<String> parseMeetingDays(String input) {
+  if (input == "") {
+    return [""];
+  }
+  List<String> output = RegExp(r'(Mo|Tu|We|Th|Fr|Sa|Su)', caseSensitive: false).allMatches(input).map((match) => match.group(0)!).toList();
+  return output;
+}
+  
 
 String parseEndTime(String input) {
   List<String> timeParts = input.trim().split(' ').toList(); // [ "12:12" , "pm" ]
@@ -439,12 +428,36 @@ String parseEndTime(String input) {
   return "$hour:$minute"; // "12-25-2025T" + "24:12" = "12-25-2025T24:12"
 }
 
+String parseEndDate(List<String> input) {
+  List<String> dates = input[0].trim().split('-');
+
+  String endDate = dates[1];
+  List<String> dateParts = endDate.trim().split('/').toList();
+
+  String month = dateParts[0];
+  String day = dateParts[1];
+  String year = dateParts[2];
+  return "$year-$month-$day";
+}
+
 String parseTimezone(List<String> input) {
   // TODO fixme
   return "fixme";
 }
 
-List<String> parseRecurrenceRules(List<String> input) {
-  // TODO fixme
-  return ["fixme"];
+List<String> parseRecurrenceRules(List<List<String>> input) {
+  List<String> output = [];
+  String rule = 'RRULE:FREQ=WEEKLY,BYDAY=';
+
+  String meetingDays = parseMeetingDays(input[0][0]).join(',');
+  if (meetingDays == "") {
+    return [];
+  }
+  rule += meetingDays;
+  rule += ';UNTIL=';
+  rule += parseEndDate(input[1]);
+  rule += "T235959Z";
+
+  output.add(rule);
+  return output;
 }
