@@ -16,7 +16,7 @@ class EditPage extends StatefulWidget {
 
 class _EditPageState extends State<EditPage> {
   final Map<String, QuestionAndAnswers> questions = {
-    // "summary": QuestionAndAnswers("How is each event title constructed"),
+    "summary": QuestionAndAnswers("How is each event title constructed"),
     "location": QuestionAndAnswers("Where is the event Located"),
     "description": QuestionAndAnswers("While not needed. If you want to add a description, then you can build one here."),
     // "first day" : QuestionAndAnswers("Which column contains the first day"),
@@ -167,7 +167,7 @@ class Dataset {
           MapEntry(key, getColumnsFromRow(i, value.answerIndices)));
 
       output.add(EventStruct(
-        summary: parseSummary([]),
+        summary: parseSummary(answers["summary"]!),
         description: parseDescription(answers["description"]!),
         location: parseLocation(answers["location"]!),
         startTime: parseStartTime([]),
@@ -327,8 +327,9 @@ class QuestionWidget extends StatelessWidget {
 }
 
 String parseSummary(List<String> input) {
-  // TODO fixme
-  return "fixme";
+  String output = input.isEmpty ? "no title given" : input.join(" ").trim();
+  output = (output == "") ? "no title given" : output;
+  return output;
 }
 
 String parseDescription(List<String> input) {
