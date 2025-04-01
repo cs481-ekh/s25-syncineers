@@ -19,9 +19,9 @@ class _EditPageState extends State<EditPage> {
     "summary": QuestionAndAnswers("How is each event title constructed"),
     "location": QuestionAndAnswers("Where is the event Located"),
     "description": QuestionAndAnswers("While not needed. If you want to add a description, then you can build one here."),
-    // "first day" : QuestionAndAnswers("Which column contains the first day"),
+    "first day" : QuestionAndAnswers("Which column contains the first day"),
     // "last day" : QuestionAndAnswers("Which column contains the last day"),
-    // "startTime" : QuestionAndAnswers("Which column contains the start time"),
+    "startTime" : QuestionAndAnswers("Which column contains the start time"), 
     // "endTime" : QuestionAndAnswers("Which column contains the end time"),
     // "recurrenceRules" : QuestionAndAnswers("Which column contains which days of the week are repeated"),
   };
@@ -170,7 +170,7 @@ class Dataset {
         summary: parseSummary(answers["summary"]!),
         description: parseDescription(answers["description"]!),
         location: parseLocation(answers["location"]!),
-        startTime: parseStartTime([]),
+        startTime: parseStartTime([answers["first day"]!, answers["startTime"]!]),
         endTime: parseEndTime([]),
         timezone: parseTimezone([]),
         recurrenceRules: parseRecurrenceRules([]),
@@ -339,13 +339,77 @@ String parseDescription(List<String> input) {
 String parseLocation(List<String> input) {
   String output = input.isEmpty ? "no location given" : input.join(" ").trim();
   output = (output == "") ? "no location given" : output;
+  print("output: $output");
   return output;
 }
 
-String parseStartTime(List<String> input) {
-  // TODO fixme
-  return "fixme";
+String parseStartTime(List<List<String>> input) {
+  if (input.isEmpty) {
+    return "";
+  }
+  String date = parseStartDate(input[0]);
+  String output = "${date}T";
+
+  if (input[1][0] == "") {
+    return output;
+  }
+  List<String> timeStrings = input[1][0].trim().split('-').toList();
+  String startTimeFull = timeStrings[0];
+  List<String> timeParts = startTimeFull.trim().split(' ').toList();
+  String startTimeShort = timeParts[0];
+  String mornAft = timeParts[1];
+
+  List<String> startTimeParts = startTimeShort.trim().split(':').toList();
+  int hourInt = int.parse(startTimeParts[0]);
+  String minute = startTimeParts[1];
+
+  bool afternoon = mornAft == "pm";
+
+  if (afternoon) {
+    hourInt += 12;
+  }
+  String hour = "$hourInt";
+  if (hourInt < 10) {
+    hour = "0$hour";
+  }
+
+  output += "$hour:$minute";
+
+  print("output: $output");
+  return output;
 }
+
+String parseStartDate(List<String> input) {
+  List<String> dates = input[0].trim().split('-');
+
+  String startDate = dates[0];
+  List<String> dateParts = startDate.trim().split('/').toList();
+
+  String startMonth = dateParts[0];
+  String startDay = dateParts[1];
+  String startYear = dateParts[2];
+  return "$startYear-$startMonth-$startDay";
+}
+
+// List<List<String>> getMeetingDays(int columnIndex) {
+//     List<List<String>> recurringDaysRows = [[]];
+
+//     for (int i = 0; i < information.length; i++) { // For each row/class
+//       List<String> daysForRow = [];
+
+//       if (columnIndex < information[i].length) {
+//         String cellData = information[i][columnIndex];
+//         if (cellData != "") {
+//           List<String> parts = cellData.split(RegExp(r'[,\s/]')).map((e) => e.trim()).toList();
+//           daysForRow.addAll(parts.where((day) => day.isNotEmpty));
+//           recurringDaysRows.add(daysForRow);
+//         } else {
+//           recurringDaysRows.add([]);
+//         }
+//       }
+//     }
+//     return recurringDaysRows;
+//   }
 
 String parseEndTime(List<String> input) {
   // TODO fixme
