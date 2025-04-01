@@ -128,18 +128,9 @@ class _LoginPageState extends State<LoginPage> {
 
                       if (confirmed) {
                         final cal = await _prefs.getSelectedCal();
-                        final event = EventStruct(
-                          summary: "Test Event", 
-                          description: "Test Description", 
-                          location: "SUB", 
-                          startTime: "2025-04-01T17:00", 
-                          endTime: "2025-04-01T18:00", 
-                          timezone: "America/Denver", 
-                          recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=MO,WE;UNTIL=20250430T000000Z']);
-                        
-                        final eventList = [event];
+                       
                         //createEvent(_currentUser!, await _prefs.getCalendarID(cal), event);
-                        createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), eventList);
+                        createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), widget.events);
                       }
                     }
                       else {
@@ -163,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 10),
             
             Expanded(
-              flex: 3,
+          //    flex: 3,
               child: ListView.builder(
                 itemCount: _calList.length,
                 itemBuilder: (context, index) {
@@ -180,6 +171,20 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
             ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: widget.events.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    child: ListTile(
+                      title: Text(widget.events[index].summary),
+                      subtitle: Text(widget.events[index].toString(), style: const TextStyle(fontSize: 10),),
+                    ),
+                  );
+                },
+              ),
+            )
           ],
         ),  
       )
