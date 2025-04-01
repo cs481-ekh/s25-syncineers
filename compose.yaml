@@ -8,15 +8,15 @@
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
 services:
-  app:
+  easy_sync:
     build:
       context: .
-      target: final
+      # target: final
     # If your application exposes a port, uncomment the following lines and change
     # the port numbers as needed. The first number is the host port and the second
     # is the port inside the container.
-    # ports:
-    #   - 8080:8080
+    ports:
+      - "${HOST_PORT:-7357}:7357"
 
     # The commented out section below is an example of how to define a PostgreSQL
     # database that your application can use. `depends_on` tells Docker Compose to
