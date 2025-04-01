@@ -22,7 +22,7 @@ class _EditPageState extends State<EditPage> {
     "first day" : QuestionAndAnswers("Which column contains the first day"),
     // "last day" : QuestionAndAnswers("Which column contains the last day"),
     "startTime" : QuestionAndAnswers("Which column contains the start time"), 
-    // "endTime" : QuestionAndAnswers("Which column contains the end time"),
+    "endTime" : QuestionAndAnswers("Which column contains the end time"),
     // "recurrenceRules" : QuestionAndAnswers("Which column contains which days of the week are repeated"),
   };
   int questionIndex = 0;
@@ -170,8 +170,8 @@ class Dataset {
         summary: parseSummary(answers["summary"]!),
         description: parseDescription(answers["description"]!),
         location: parseLocation(answers["location"]!),
-        startTime: parseStartTime([answers["first day"]!, answers["startTime"]!]),
-        endTime: parseEndTime([]),
+        startTime: parseTime([answers["first day"]!, answers["startTime"]!], true),
+        endTime: parseTime([answers["first day"]!, answers["startTime"]!], false),
         timezone: parseTimezone([]),
         recurrenceRules: parseRecurrenceRules([]),
       ));
@@ -339,11 +339,10 @@ String parseDescription(List<String> input) {
 String parseLocation(List<String> input) {
   String output = input.isEmpty ? "no location given" : input.join(" ").trim();
   output = (output == "") ? "no location given" : output;
-  print("output: $output");
   return output;
 }
 
-String parseStartTime(List<List<String>> input) {
+String parseTime(List<List<String>> input, bool start) {
   if (input.isEmpty) {
     return "";
   }
@@ -353,15 +352,25 @@ String parseStartTime(List<List<String>> input) {
   if (input[1][0] == "") {
     return output;
   }
-  List<String> timeStrings = input[1][0].trim().split('-').toList();
-  String startTimeFull = timeStrings[0];
-  List<String> timeParts = startTimeFull.trim().split(' ').toList();
-  String startTimeShort = timeParts[0];
-  String mornAft = timeParts[1];
 
-  List<String> startTimeParts = startTimeShort.trim().split(':').toList();
-  int hourInt = int.parse(startTimeParts[0]);
-  String minute = startTimeParts[1];
+  List<String> timeList = input[1][0].trim().split('-').toList(); // [ "01:23 am" , "12:12 pm" ]
+  if (start) { // Parse start time
+    output += parseStartTime(timeList[0]); // output += parseStartTime("01:23 am")
+  } else if (!start) { // Parse end time
+    output += parseEndTime(timeList[1]); // output += parseEndTime("12:12 pm")
+  }
+
+  return output; // "12-25-2025T01:23"
+}
+
+String parseStartTime(String input) {
+  List<String> timeParts = input.trim().split(' ').toList(); // [ "01:23" , "am" ]
+  String timeShort = timeParts[0]; // "01:23"
+  String mornAft = timeParts[1]; // "am"
+
+  List<String> minHour = timeShort.trim().split(':').toList(); // [ "01" , "23" ]
+  int hourInt = int.parse(minHour[0]); // 1
+  String minute = minHour[1]; // 23
 
   bool afternoon = mornAft == "pm";
 
@@ -370,13 +379,10 @@ String parseStartTime(List<List<String>> input) {
   }
   String hour = "$hourInt";
   if (hourInt < 10) {
-    hour = "0$hour";
+    hour = "0$hour"; // "01"
   }
 
-  output += "$hour:$minute";
-
-  print("output: $output");
-  return output;
+  return "$hour:$minute"; // "12-25-2025T" + "01:23" = "12-25-2025T01:23"
 }
 
 String parseStartDate(List<String> input) {
@@ -411,9 +417,26 @@ String parseStartDate(List<String> input) {
 //     return recurringDaysRows;
 //   }
 
-String parseEndTime(List<String> input) {
-  // TODO fixme
-  return "fixme";
+String parseEndTime(String input) {
+  List<String> timeParts = input.trim().split(' ').toList(); // [ "12:12" , "pm" ]
+  String timeShort = timeParts[0]; // "12:12"
+  String mornAft = timeParts[1]; // "pm"
+
+  List<String> minHour = timeShort.trim().split(':').toList(); // [ "12" , "12" ]
+  int hourInt = int.parse(minHour[0]); // 12
+  String minute = minHour[1]; // 12
+
+  bool afternoon = mornAft == "pm";
+
+  if (afternoon) {
+    hourInt += 12; // 24
+  }
+  String hour = "$hourInt"; // "24"
+  if (hourInt < 10) {
+    hour = "0$hour"; 
+  }
+
+  return "$hour:$minute"; // "12-25-2025T" + "24:12" = "12-25-2025T24:12"
 }
 
 String parseTimezone(List<String> input) {
