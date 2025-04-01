@@ -96,50 +96,61 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               children: [
                 Expanded(child: Center(child: GoogleSignInButton(onSignIn: _handleSignIn))),
-              Expanded(
+                Expanded(
                 child: Center(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if(_currentUser != null) {
-                      final cal = await _prefs.getSelectedCal();
-                      final event = EventStruct(
-                        summary: "Event Title", 
-                        description: "Event Description", 
-                        location: "My house", 
-                        startTime: "2025-03-10T17:00", 
-                        endTime: "2025-03-10T18:00", 
-                        timezone: "America/Denver", 
-                        recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=MO,WE;UNTIL=20250315T000000Z']);
-                      final event1 = EventStruct(
-                        summary: "Testing", 
-                        description: "Event Description", 
-                        location: "My house", 
-                        startTime: "2025-03-10T18:00", 
-                        endTime: "2025-03-10T19:00", 
-                        timezone: "America/Denver", 
-                        recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=TU,TH;UNTIL=20250315T000000Z']);
-                      final event2 = EventStruct(
-                        summary: "Hello there", 
-                        description: "Event Description", 
-                        location: "My house", 
-                        startTime: "2025-03-10T19:00", 
-                        endTime: "2025-03-10T20:00", 
-                        timezone: "America/Denver", 
-                        recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=F;UNTIL=20250315T000000Z']);
+                  child: ElevatedButton(
+                    onPressed: () async {
                       
-                      final eventList = [event, event1, event2];
-                      //createEvent(_currentUser!, await _prefs.getCalendarID(cal), event);
-                      createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), eventList);
-                    }
-                    else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('No user signed in')),
+                    if(_currentUser != null) {
+                      final bool confirmed = await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Confirm Event'),
+                            content: const Text('Do you want to create this event?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(false); // User cancels
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(true); // User confirms
+                                },
+                                child: const Text('Confirm'),
+                              ),
+                            ],
+                          );
+                        },
                       );
+
+                      if (confirmed) {
+                        final cal = await _prefs.getSelectedCal();
+                        final event = EventStruct(
+                          summary: "Test Event", 
+                          description: "Test Description", 
+                          location: "SUB", 
+                          startTime: "2025-04-01T17:00", 
+                          endTime: "2025-04-01T18:00", 
+                          timezone: "America/Denver", 
+                          recurrenceRules: ['RRULE:FREQ=WEEKLY;BYDAY=MO,WE;UNTIL=20250430T000000Z']);
+                        
+                        final eventList = [event];
+                        //createEvent(_currentUser!, await _prefs.getCalendarID(cal), event);
+                        createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), eventList);
+                      }
                     }
-                  },
+                      else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('No user signed in')),
+                        );
+                      }
+                    },
                   child: const Text('Create Events'),
+                  ),
                 ),
-                            ),
               ),
               ]
             ),
@@ -169,16 +180,9 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
             ),
-
-            const SizedBox(height: 20),
-
-            
           ],
         ),  
-             
-          
-        )
-
-      );
+      )
+    );
   }
 }
