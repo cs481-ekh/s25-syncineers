@@ -440,8 +440,8 @@ String parseEndTime(String input) {
 }
 
 String parseTimezone(List<String> input) {
-  // TODO fixme
-  return "fixme";
+  // TODO potentially find a way to get timezone later, for now hard code Denver
+  return "America/Denver";
 }
 
 List<String> parseRecurrenceRules(List<String> input) {
