@@ -350,7 +350,8 @@ String parseTime(List<List<String>> input, bool start) {
   String output = "${date}T";
 
   if (input[1][0] == "") {
-    return output;
+    //return output;
+    return start ? "${output}00:00" : "${output}01:00"; // Default start and end time
   }
 
   List<String> timeList = input[1][0].trim().split('-').toList(); // [ "01:23 am" , "12:12 pm" ]
@@ -364,6 +365,11 @@ String parseTime(List<List<String>> input, bool start) {
 }
 
 String parseStartTime(String input) {
+
+  if(input.isEmpty) {
+    return "00:00"; // Default start time
+  }
+
   List<String> timeParts = input.trim().split(' ').toList(); // [ "01:23" , "am" ]
   String timeShort = timeParts[0]; // "01:23"
   String mornAft = timeParts[1]; // "am"
@@ -374,7 +380,7 @@ String parseStartTime(String input) {
 
   bool afternoon = mornAft == "pm";
 
-  if (afternoon) {
+  if (afternoon && hourInt != 12) {
     hourInt += 12;
   }
   String hour = "$hourInt";
@@ -407,6 +413,11 @@ List<String> parseMeetingDays(String input) {
   
 
 String parseEndTime(String input) {
+
+  if(input.isEmpty) {
+    return "01:00"; // Default end time
+  }
+
   List<String> timeParts = input.trim().split(' ').toList(); // [ "12:12" , "pm" ]
   String timeShort = timeParts[0]; // "12:12"
   String mornAft = timeParts[1]; // "pm"
@@ -417,7 +428,7 @@ String parseEndTime(String input) {
 
   bool afternoon = mornAft == "pm";
 
-  if (afternoon) {
+  if (afternoon && hourInt != 12) {
     hourInt += 12; // 24
   }
   String hour = "$hourInt"; // "24"
@@ -437,7 +448,7 @@ String parseEndDate(List<String> input) {
   String month = dateParts[0];
   String day = dateParts[1];
   String year = dateParts[2];
-  return "$year-$month-$day";
+  return "$year$month$day";
 }
 
 String parseTimezone(List<String> input) {
@@ -447,11 +458,13 @@ String parseTimezone(List<String> input) {
 
 List<String> parseRecurrenceRules(List<List<String>> input) {
   List<String> output = [];
-  String rule = 'RRULE:FREQ=WEEKLY,BYDAY=';
+  String rule = 'RRULE:FREQ=WEEKLY;BYDAY=';
 
   String meetingDays = parseMeetingDays(input[0][0]).join(',');
   if (meetingDays == "") {
-    return [];
+    //return [];
+    final endDate = parseEndDate(input[1]);
+    return ['RRULE:FREQ=WEEKLY;BYDAY=Mo;UNTIL=${endDate}T235959Z'];
   }
   rule += meetingDays;
   rule += ';UNTIL=';
