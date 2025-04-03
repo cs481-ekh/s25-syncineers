@@ -85,7 +85,7 @@ import 'event_struct.dart';
 
     client.close();
     } catch (e) {
-      print('Failed to create event: $e');
+      print('Failed to create event: $e event:$details');
     }
   }
 
@@ -122,7 +122,11 @@ import 'event_struct.dart';
           recurrence: val.recurrenceRules,
         );
 
-        await calendarApi.events.insert(event, calendarId);
+       // await calendarApi.events.insert(event, calendarId);
+       // createEvent(currentUser, calendarId, val);
+        print('Event added: ${event.summary}');
+
+        await Future.delayed(const Duration(milliseconds: 50)); // Adjust delay as needed
       }
 
       client.close();
@@ -130,4 +134,3 @@ import 'event_struct.dart';
       print('Failed to create events: $e');
     }
   }
- 
