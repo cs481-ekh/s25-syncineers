@@ -351,7 +351,7 @@ String parseTime(List<List<String>> input, bool start) {
 
   if (input[1][0] == "") {
     //return output;
-    return start ? "${output}00:00" : "${output}23:59"; // Default start and end time
+    return start ? "${output}00:00" : "${output}01:00"; // Default start and end time
   }
 
   List<String> timeList = input[1][0].trim().split('-').toList(); // [ "01:23 am" , "12:12 pm" ]
@@ -415,7 +415,7 @@ List<String> parseMeetingDays(String input) {
 String parseEndTime(String input) {
 
   if(input.isEmpty) {
-    return "23:59"; // Default end time
+    return "01:00"; // Default end time
   }
 
   List<String> timeParts = input.trim().split(' ').toList(); // [ "12:12" , "pm" ]
@@ -428,7 +428,7 @@ String parseEndTime(String input) {
 
   bool afternoon = mornAft == "pm";
 
-  if (afternoon) {
+  if (afternoon && hourInt != 12) {
     hourInt += 12; // 24
   }
   String hour = "$hourInt"; // "24"

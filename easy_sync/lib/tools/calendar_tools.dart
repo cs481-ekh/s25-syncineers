@@ -123,10 +123,10 @@ import 'event_struct.dart';
         );
 
        // await calendarApi.events.insert(event, calendarId);
-       // createEvent(currentUser, calendarId, val);
+        createEvent(currentUser, calendarId, val);
         print('Event added: ${event.summary}');
 
-        await Future.delayed(const Duration(milliseconds: 50)); // Adjust delay as needed
+        await Future.delayed(const Duration(milliseconds: 250)); // Adjust delay as needed
       }
 
       client.close();
