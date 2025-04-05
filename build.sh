@@ -12,6 +12,7 @@ if find lib test -name '*.dart' | grep .; then
     else
         echo "Build failed" && exit 127
         exit 1
+    fi
 
 else
     echo "No Flutter files found, skipping build."

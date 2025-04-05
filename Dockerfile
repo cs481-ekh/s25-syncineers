@@ -1,36 +1,20 @@
-FROM ghcr.io/cirruslabs/flutter:latest AS flutter-build
-
-# Install dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    unzip \
-    xz-utils 
-
-# Install Flutter
-# RUN git clone https://github.com/flutter/flutter.git /flutter && \
-#     /flutter/bin/flutter --version
-
-# RUN /flutter/bin/flutter config
-
-# Set Flutter environmental variable
-ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
+FROM ghcr.io/cirruslabs/flutter:latest AS flutter-Build
 
 WORKDIR /app
 
-COPY easy_sync/pubspec.* ./
+COPY . . 
+
+WORKDIR /app/easy_sync
+
+RUN flutter clean
+
 RUN flutter pub get
 
-COPY easy_sync/ /app/easy_sync
+RUN flutter build web
 
-RUN npm install -g serve
-
-# COPY build.ps1 /build.ps1
-
-# Run pwsh script
-# RUN pwsh -ExecutionPolicy Bypass -File /build.ps1
-
-RUN build.sh
+RUN apt-get update && apt-get install -y npm && \
+    npm install -g serve
 
 EXPOSE 7357
-CMD ["serve", "-s", "/app/easy_sync/build/web", "--listen", "7357"]
+
+CMD ["serve", "-s", "build/web", "-l", "7357"]

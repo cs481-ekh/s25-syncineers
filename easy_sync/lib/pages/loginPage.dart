@@ -171,6 +171,9 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
             ),
+            const SizedBox(height: 10),
+            const Text("Events to be uploaded", style: TextStyle(fontSize: 16)) ,
+            const SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
                 itemCount: widget.events.length,
