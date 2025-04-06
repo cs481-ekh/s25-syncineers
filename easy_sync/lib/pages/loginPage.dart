@@ -7,11 +7,25 @@ import 'package:easy_sync/tools/calendar_tools.dart';
 import 'package:easy_sync/tools/event_struct.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+Map<String, List<EventStruct>> findEventLocations(List<EventStruct> list) {
+  return Map.fromIterable(
+    list.map((element) => element.location).toSet(),
+    value: (location) => list.where((element) => element.location == location).toList(),
+  );
+}
+
 class LoginPage extends StatefulWidget {
  
  final List<EventStruct> events;
+ late Map<String,List<EventStruct>> locationEventLists;
+ late List<String> locations;
+ late int selectedLocationIndex;
 
-  const LoginPage(this.events, {super.key});
+  LoginPage(this.events, {super.key}) {
+    locationEventLists = findEventLocations(events);
+    locations = locationEventLists.keys.toList();
+    selectedLocationIndex = -1;
+  }
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -126,14 +140,13 @@ class _LoginPageState extends State<LoginPage> {
                         },
                       );
 
-                      if (confirmed) {
+                      if (confirmed && widget.selectedLocationIndex != -1) {
                         final cal = await _prefs.getSelectedCal();
                        
                         //createEvent(_currentUser!, await _prefs.getCalendarID(cal), event);
-                        createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), widget.events);
+                        createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), widget.locationEventLists[widget.locations[widget.selectedLocationIndex]]!);
                       }
-                    }
-                      else {
+                    } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('No user signed in')),
                         );
@@ -172,17 +185,24 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             const SizedBox(height: 10),
-            const Text("Events to be uploaded", style: TextStyle(fontSize: 16)) ,
+            widget.selectedLocationIndex == -1 ? 
+              const Text("No event location selected", style: TextStyle(fontSize: 16)) :
+              Text("Current event location: ${widget.locations[widget.selectedLocationIndex]}", style: const TextStyle(fontSize: 16)),
             const SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
-                itemCount: widget.events.length,
+                itemCount: widget.locations.length,
                 itemBuilder: (context, index) {
                   return Card(
                     margin: const EdgeInsets.symmetric(vertical: 5),
                     child: ListTile(
-                      title: Text(widget.events[index].summary),
-                      subtitle: Text(widget.events[index].toString(), style: const TextStyle(fontSize: 10),),
+                      title: Text(widget.locations[index]),
+                      subtitle: Text(widget.locationEventLists[widget.locations[index]]!.map((element) => element.summary).join(", "), style: const TextStyle(fontSize: 10),),
+                      onTap: () {
+                        setState(() {
+                          widget.selectedLocationIndex = index;
+                        });
+                      },
                     ),
                   );
                 },
