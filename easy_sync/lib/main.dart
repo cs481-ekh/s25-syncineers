@@ -18,7 +18,7 @@ class MainApp extends StatelessWidget {
       routes: {
         '/': (context) => InputPage(),
         '/edit': (context) => EditPage(const [["col1","col2","col3"],["example11","example12","example13"],["example21","example22","example23"]]),
-        '/login': (context) => const LoginPage([]),
+        '/login': (context) => LoginPage([]),
       }
     );
   }

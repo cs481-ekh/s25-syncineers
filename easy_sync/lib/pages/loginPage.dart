@@ -9,9 +9,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
  
- final List<EventStruct> events;
+ List<EventStruct> events;
 
-  const LoginPage(this.events, {super.key});
+  LoginPage(this.events, {super.key});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -25,6 +25,8 @@ class _LoginPageState extends State<LoginPage> {
   
   String _cal = ''; //selected calendar
   List<String> _calList = []; //list of user's calendars
+
+  bool leaveOutOnline = false;
 
   //store local values for user data
   String _displayName = 'displayName';
@@ -42,7 +44,6 @@ class _LoginPageState extends State<LoginPage> {
 
   //load changes in shared preferences
   void _loadSettings() async  {
-
 
     final userValues = await _prefs.getUserValues();
     final calendar = await _prefs.getSelectedCal();
@@ -76,6 +77,17 @@ class _LoginPageState extends State<LoginPage> {
         _loadSettings();
    //   }
     });
+  }
+
+  void hideOnline() {
+    List<EventStruct> oldEvents = widget.events;
+    List<EventStruct> newEvents = [];
+    for (var i = 0; i < oldEvents.length; i++) {
+      if (oldEvents[i].startTime != "00:00" && oldEvents[i].endTime != "01:00") {
+        newEvents.add(oldEvents[i]);
+      }
+    }
+    widget.events = newEvents;
   }
 
   @override
@@ -171,6 +183,22 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
             ),
+            Row(
+              children: [
+                Checkbox(
+                  value: leaveOutOnline,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      leaveOutOnline = value ?? false;
+                      if (leaveOutOnline) hideOnline();
+                      print("Leave out online: $leaveOutOnline");
+                    });
+                  },
+                ),
+                const Text("Don't upload online classes")
+              ],
+            ),
+            
             const SizedBox(height: 10),
             const Text("Events to be uploaded", style: TextStyle(fontSize: 16)) ,
             const SizedBox(height: 10),
