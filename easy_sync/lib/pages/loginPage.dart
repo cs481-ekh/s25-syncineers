@@ -83,8 +83,11 @@ class _LoginPageState extends State<LoginPage> {
     List<EventStruct> oldEvents = widget.events;
     List<EventStruct> newEvents = [];
     for (var i = 0; i < oldEvents.length; i++) {
-      if (oldEvents[i].startTime != "00:00" && oldEvents[i].endTime != "01:00") {
+      List<String> startTimeParts = oldEvents[i].startTime.split("T");
+      List<String> endTimeParts = oldEvents[i].endTime.split("T");
+      if (startTimeParts[1] != "00:00" && endTimeParts[1] != "01:00") {
         newEvents.add(oldEvents[i]);
+        print(oldEvents[i].startTime);
       }
     }
     widget.events = newEvents;
