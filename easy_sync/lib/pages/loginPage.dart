@@ -159,55 +159,102 @@ class _LoginPageState extends State<LoginPage> {
               ]
             ),
             const SizedBox(height: 20),
+            Row(
+              children: [
+                _cal.isNotEmpty ? //display current calendar text
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        "Current Calendar: $_cal", 
+                        style: const TextStyle(
+                          fontSize: 16
+                        ), 
+                        textAlign: TextAlign.center,)
+                      )
+                    ) 
+                  : const Expanded(
+                    child: Center(
+                      child: Text(
+                        "No calendar selected", 
+                        style: TextStyle(
+                          fontSize: 16
+                        ),
+                        textAlign: TextAlign.center
+                      )
+                    )
+                  ),
 
-            _cal.isNotEmpty ? 
-              Text("Current Calendar: $_cal", style: const TextStyle(fontSize: 16)) 
-              : const Text("No calendar selected", style: TextStyle(fontSize: 16)),
-
-            const SizedBox(height: 10),
-            
-            Expanded(
-          //    flex: 3,
-              child: ListView.builder(
-                itemCount: _calList.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 5),
-                    child: ListTile(
-                      title: Text(_calList[index]),
-                      onTap: () {
-                        _prefs.setSelectedCal(_calList[index]);
-                        _loadSettings();
-                      },
-                    ),
-                  );
-                },
-              ),
+                widget.selectedLocationIndex == -1 ? // display desired event location to upload to
+                  const Expanded(
+                    child: Center(
+                      child: Text(
+                        "No event location selected", 
+                        style: TextStyle(
+                          fontSize: 16
+                        ),
+                        textAlign: TextAlign.center
+                      )
+                    )
+                  ) 
+                  : Expanded(
+                    child: Center(
+                      child: Text(
+                        "Current event location: ${widget.locations[widget.selectedLocationIndex]}", 
+                        style: const TextStyle(
+                          fontSize: 16
+                        ),
+                        textAlign: TextAlign.center
+                      )
+                    )
+                  ),
+              ]
             ),
             const SizedBox(height: 10),
-            widget.selectedLocationIndex == -1 ? 
-              const Text("No event location selected", style: TextStyle(fontSize: 16)) :
-              Text("Current event location: ${widget.locations[widget.selectedLocationIndex]}", style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                itemCount: widget.locations.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 5),
-                    child: ListTile(
-                      title: Text(widget.locations[index]),
-                      subtitle: Text(widget.locationEventLists[widget.locations[index]]!.map((element) => element.summary).join(", "), style: const TextStyle(fontSize: 10),),
-                      onTap: () {
-                        setState(() {
-                          widget.selectedLocationIndex = index;
-                        });
-                      },
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: ListView.builder(
+                    itemCount: _calList.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 5),
+                        child: ListTile(
+                          title: Text(_calList[index]),
+                          onTap: () {
+                            _prefs.setSelectedCal(_calList[index]);
+                            _loadSettings();
+                          },
+                        ),
+                      );
+                    },
                     ),
-                  );
-                },
+                  ),
+                  const SizedBox(width: 10), //space between listviews
+                  Expanded(
+                    flex: 1,
+                    child: ListView.builder(
+                    itemCount: widget.locations.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 5),
+                        child: ListTile(
+                          title: Text(widget.locations[index]),
+                          subtitle: Text(widget.locationEventLists[widget.locations[index]]!.map((element) => element.summary).join(", "), style: const TextStyle(fontSize: 10),),
+                          onTap: () {
+                            setState(() {
+                              widget.selectedLocationIndex = index;
+                            });
+                          },
+                        ),
+                      );
+                    },
+                    ),
+                  )
+                ]
               ),
-            )
+            ),            
           ],
         ),  
       )
