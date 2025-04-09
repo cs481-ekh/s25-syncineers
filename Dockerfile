@@ -1,5 +1,8 @@
 FROM ghcr.io/cirruslabs/flutter:latest AS flutter-Build
 
+ARG APP_ROOT
+ENV APP_ROOT=$APP_ROOT
+
 WORKDIR /app
 
 COPY . . 
