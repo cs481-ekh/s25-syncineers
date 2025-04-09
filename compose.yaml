@@ -11,6 +11,8 @@ services:
   easy_sync:
     build:
       context: .
+      args:
+        APP_ROOT: s25-syncineers
       # target: final
     # If your application exposes a port, uncomment the following lines and change
     # the port numbers as needed. The first number is the host port and the second
