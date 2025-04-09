@@ -8,6 +8,9 @@ RUN useradd -m usertest
 ARG APP_ROOT
 ENV APP_ROOT=$APP_ROOT
 
+ARG APP_ROOT
+ENV APP_ROOT=$APP_ROOT
+
 WORKDIR /app
 
 COPY . . 
@@ -25,7 +28,7 @@ RUN flutter clean
 
 RUN flutter pub get
 
-RUN flutter build web
+RUN flutter build web --base-href=/$APP_ROOT/
 
 EXPOSE 7357
 
