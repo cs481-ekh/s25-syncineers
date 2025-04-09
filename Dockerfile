@@ -13,7 +13,7 @@ RUN flutter clean
 
 RUN flutter pub get
 
-RUN flutter build web
+RUN flutter build web --base-href=/$APP_ROOT/
 
 RUN apt-get update && apt-get install -y npm && \
     npm install -g serve
