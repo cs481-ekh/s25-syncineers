@@ -8,9 +8,6 @@ RUN useradd -m usertest
 ARG APP_ROOT
 ENV APP_ROOT=$APP_ROOT
 
-ARG APP_ROOT
-ENV APP_ROOT=$APP_ROOT
-
 WORKDIR /app
 
 COPY . . 
