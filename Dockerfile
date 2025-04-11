@@ -29,4 +29,4 @@ RUN flutter build web --base-href=/$APP_ROOT/
 
 EXPOSE 7357
 
-CMD ["serve", "-s", "build/web", "-l", "7357"]
+CMD ["serve", "-s", "/app/easy_sync/build/web", "-l", "7357"]
