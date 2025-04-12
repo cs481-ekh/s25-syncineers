@@ -1,6 +1,4 @@
-import 'package:easy_sync/tools/frame.dart';
 import 'package:flutter/material.dart';
-import 'tools/auth_button.dart';
 import 'package:easy_sync/pages/loginPage.dart';
 import 'package:easy_sync/pages/inputPage.dart';
 import 'package:easy_sync/pages/editPage.dart';

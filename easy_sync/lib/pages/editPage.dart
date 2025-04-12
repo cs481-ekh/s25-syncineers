@@ -1,6 +1,5 @@
 import 'package:easy_sync/pages/loginPage.dart';
 import 'package:easy_sync/tools/dataset.dart';
-import 'package:easy_sync/tools/event_struct.dart';
 import 'package:easy_sync/tools/frame.dart';
 import 'package:easy_sync/tools/question_widget.dart';
 import 'package:flutter/material.dart';
@@ -156,10 +155,42 @@ String parseLocation(List<String> input) {
 }
 
 String parseTime(List<List<String>> input, bool start) {
+  Map<String, int> DAYS = {"Mo": 0, "Tu": 1, "We": 2, "Th": 3, "Fr": 4};
+  Map<String, int> NUM_DAYS_IN_MONTH = {"01": 31, "02": 28, "03": 31, "04": 30, "05": 31, "06": 30, "07": 31, "08": 31, "09": 30, "10": 31, "11": 30, "12": 31};
+
   if (input.isEmpty) {
     return "";
   }
   String date = parseStartDate(input[0]);
+
+  String startDay = parseMeetingDays(input[2][0])[0]; // "Mo"
+
+  List<String> dateParts = date.split('-').toList();
+  String year = dateParts[0];
+  String month = dateParts[1];
+  String day = dateParts[2];
+
+  int? numDaysDifferent = DAYS[startDay]; // The number of days between the first class date and the semester start date assuming semester start date is monday
+  int dayInt = int.parse(day);
+
+  int adjustedDayInt = dayInt + (numDaysDifferent ?? 0);
+
+  if (adjustedDayInt > (NUM_DAYS_IN_MONTH[month] ?? 28)) {
+    int adjustedMonthInt = (int.parse(month) + 1) % 12;
+    adjustedDayInt = adjustedDayInt % (NUM_DAYS_IN_MONTH[month] ?? 28);
+    if (adjustedMonthInt < 10) {
+      month = "0$adjustedMonthInt";
+    } else {
+      month = "$adjustedMonthInt";
+    }
+  }
+
+  if (adjustedDayInt < 10) {
+    day = "0$adjustedDayInt";
+  } else {
+    day = "$adjustedDayInt";
+  }
+  date = "$year-$month-$day";
   String output = "${date}T";
 
   if (input[1][0] == "") {

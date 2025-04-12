@@ -36,8 +36,8 @@ class Dataset {
         summary: parseSummary(answers["summary"]!),
         description: parseDescription(answers["description"]!),
         location: parseLocation(answers["location"]!),
-        startTime: parseTime([answers["first day"]!, answers["startTime"]!], true),
-        endTime: parseTime([answers["first day"]!, answers["startTime"]!], false),
+        startTime: parseTime([answers["first day"]!, answers["startTime"]!, answers["recurrenceRules"]!], true),
+        endTime: parseTime([answers["first day"]!, answers["startTime"]!, answers["recurrenceRules"]!], false),
         timezone: parseTimezone([]),
         recurrenceRules: parseRecurrenceRules([answers["recurrenceRules"]!, answers["last day"]!]),
       ));
