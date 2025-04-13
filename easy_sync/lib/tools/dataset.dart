@@ -35,7 +35,7 @@ class Dataset {
       output.add(EventStruct(
         summary: parseSummary(answers["summary"]!),
         description: parseDescription(answers["description"]!),
-        location: parseLocation(answers["location"]!),
+        location: parseLocation(answers["location"]!, answers["catalog number"]!),
         startTime: parseTime([answers["first day"]!, answers["startTime"]!, answers["recurrenceRules"]!], true),
         endTime: parseTime([answers["first day"]!, answers["startTime"]!, answers["recurrenceRules"]!], false),
         timezone: parseTimezone([]),

@@ -49,6 +49,8 @@ class _InputPageState extends State<InputPage> {
           rows = parseXLSX(fileBytes);
         }
       }
+
+      widget.table = Dataset(rows);
     }
   }
 
@@ -101,6 +103,7 @@ class _InputPageState extends State<InputPage> {
   Widget build(BuildContext context) {
     final Map<String, QuestionAndAnswers> questions = {
       "summary": QuestionAndAnswers.withAnswers("How is each event title constructed", [0, 1, 7, 2]),
+      "catalog number": QuestionAndAnswers.withAnswers("What is the catalog number", [1]),
       "location": QuestionAndAnswers.withAnswers("Where is the event Located", [19]),
       "description": QuestionAndAnswers.withAnswers("While not needed. If you want to add a description, then you can build one here.", []),
       "first day" : QuestionAndAnswers.withAnswers("Which column contains the first day", [14]),
@@ -109,17 +112,15 @@ class _InputPageState extends State<InputPage> {
       "endTime" : QuestionAndAnswers.withAnswers("Which column contains the end time", [16]),
       "recurrenceRules" : QuestionAndAnswers.withAnswers("Which column contains which days of the week are repeated", [16]),
     };
+
     return Frame(
       title: 'Input',
       onNextPressed: () {
         if (useDefaults) {
-          List<List<String>> newRows = rows.map((inner) => List<String>.from(inner)).toList();
-          newRows.removeAt(0);
-          widget.table = Dataset(rows);
-          
           Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage(widget.table.getEvents(questions))));
         } else {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => EditPage(rows)));
+          questions.forEach((key, value) {value.resetAnswers();});
+          Navigator.push(context, MaterialPageRoute(builder: (context) => EditPage(table: widget.table, questions: questions)));
         }
       },
       prevColor: Colors.grey,
