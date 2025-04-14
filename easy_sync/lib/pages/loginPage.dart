@@ -28,6 +28,12 @@ class LoginPage extends StatefulWidget {
     locationEventLists = findEventLocations(events);
     locations = locationEventLists.keys.toList();
     locations.sort();
+    locations = ["All classes", "All undergraduate level classes", "All graduate level classes"] + locations;
+    locationEventLists.addAll({
+      "All classes": events,
+      "All undergraduate level classes": events.where((element) => !element.isGraduateLevel).toList(),
+      "All graduate level classes": events.where((element) => element.isGraduateLevel).toList(),
+    });
     selectedLocationIndex = -1;
   }
 
