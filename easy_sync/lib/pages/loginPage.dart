@@ -27,6 +27,7 @@ class LoginPage extends StatefulWidget {
   LoginPage(this.events, {super.key}) {
     locationEventLists = findEventLocations(events);
     locations = locationEventLists.keys.toList();
+    locations.sort();
     selectedLocationIndex = -1;
   }
 

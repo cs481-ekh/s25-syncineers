@@ -40,6 +40,7 @@ class Dataset {
         endTime: parseTime([answers["first day"]!, answers["startTime"]!, answers["recurrenceRules"]!], false),
         timezone: parseTimezone([]),
         recurrenceRules: parseRecurrenceRules([answers["recurrenceRules"]!, answers["last day"]!]),
+        isGraduateLevel: parseGraduateLevel(answers["catalog number"]!),
       ));
     }
 

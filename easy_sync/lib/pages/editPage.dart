@@ -5,29 +5,18 @@ import 'package:easy_sync/tools/question_widget.dart';
 import 'package:flutter/material.dart';
 
 class EditPage extends StatefulWidget {
-  late final Dataset table;
+  final Dataset table;
+  final Map<String, QuestionAndAnswers> questions; 
 
-  EditPage(List<List<String>> table, {super.key}) {
-    this.table = Dataset(table);
-  }
+  const EditPage({super.key, required this.table, required this.questions});
 
   @override
   _EditPageState createState() => _EditPageState();
 }
 
 class _EditPageState extends State<EditPage> {
-  final Map<String, QuestionAndAnswers> questions = {
-    "summary": QuestionAndAnswers("How is each event title constructed"),
-    "location": QuestionAndAnswers("Where is the event Located"),
-    "description": QuestionAndAnswers("While not needed. If you want to add a description, then you can build one here."),
-    "first day" : QuestionAndAnswers("Which column contains the first day"),
-    "last day" : QuestionAndAnswers("Which column contains the last day"),
-    "startTime" : QuestionAndAnswers("Which column contains the start time"), 
-    "endTime" : QuestionAndAnswers("Which column contains the end time"),
-    "recurrenceRules" : QuestionAndAnswers("Which column contains which days of the week are repeated"),
-  };
   int questionIndex = 0;
-  late List<String> questionKeys = questions.keys.toList();
+  late List<String> questionKeys = widget.questions.keys.toList();
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +31,9 @@ class _EditPageState extends State<EditPage> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    LoginPage(widget.table.getEvents(questions))));
+                    LoginPage(widget.table.getEvents(widget.questions))));
       },
-      child: (questionIndex >= questions.length)
+      child: (questionIndex >= widget.questions.length)
           ? questionsComplete()
           : askCurrentQuestion(),
     );
@@ -55,7 +44,7 @@ class _EditPageState extends State<EditPage> {
       children: [
         Expanded(
           child: QuestionWidget(
-            questionAndAnswerIndices: questions[questionKeys[questionIndex]]!,
+            questionAndAnswerIndices: widget.questions[questionKeys[questionIndex]]!,
             selectableAnswers: widget.table,
             callBackFunction: () {
               setState(() {});
@@ -114,7 +103,7 @@ class _EditPageState extends State<EditPage> {
               child: FilledButton(
                   onPressed: () {
                     setState(() {
-                      questionIndex = questions.length - 1;
+                      questionIndex = widget.questions.length - 1;
                     });
                   },
                   child: const Text("Previous question")),
@@ -122,8 +111,7 @@ class _EditPageState extends State<EditPage> {
           ],
         ),
         const Expanded(
-            child: Text(
-                "That was the last question. You can move on to the next page.")),
+            child: Text("That was the last question. You can move on to the next page.")),
       ],
     );
   }
@@ -136,6 +124,10 @@ class QuestionAndAnswers {
   QuestionAndAnswers(this.question) : answerIndices = [];
 
   QuestionAndAnswers.withAnswers(this.question, this.answerIndices);
+
+  void resetAnswers() {
+    answerIndices.clear();
+  }
 }
 
 String parseSummary(List<String> input) {
@@ -148,10 +140,9 @@ String parseDescription(List<String> input) {
   return input.join(" ");
 }
 
-String parseLocation(List<String> input) {
-  String output = input.isEmpty ? "no location given" : input.join(" ").trim();
-  output = (output == "") ? "no location given" : output;
-  return output;
+String parseLocation(List<String> locations) {
+  String location = locations.isEmpty ? "no location given" : locations.join(" ").trim();
+  return (location == "") ? "no location given" : location;
 }
 
 String parseTime(List<List<String>> input, bool start) {
@@ -255,7 +246,6 @@ List<String> parseMeetingDays(String input) {
   return output;
 }
   
-
 String parseEndTime(String input) {
 
   if(input.isEmpty) {
@@ -317,4 +307,8 @@ List<String> parseRecurrenceRules(List<List<String>> input) {
 
   output.add(rule);
   return output;
+}
+
+bool parseGraduateLevel(List<String> input) {
+  return int.parse(input.isEmpty ? "000" : input.join(" ").trim()) >= 500;
 }

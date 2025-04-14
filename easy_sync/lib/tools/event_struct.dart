@@ -6,6 +6,7 @@ class EventStruct {
   final String endTime;
   final String timezone;
   final List<String> recurrenceRules;
+  final bool isGraduateLevel;
 
   EventStruct({
     required this.summary,
@@ -15,6 +16,7 @@ class EventStruct {
     required this.endTime,
     required this.timezone,
     required this.recurrenceRules,
+    required this.isGraduateLevel,
   });
 
   @override
@@ -26,7 +28,8 @@ class EventStruct {
         'startTime: $startTime, '
         'endTime: $endTime, '
         'timezone: $timezone, '
-        'recurrenceRules: $recurrenceRules)';
+        'recurrenceRules: $recurrenceRules,'
+        '${(isGraduateLevel) ? "Graduate level" : "Undergraduate level"}';
   }
 
 }
