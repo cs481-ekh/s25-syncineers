@@ -23,11 +23,13 @@ class LoginPage extends StatefulWidget {
  late Map<String,List<EventStruct>> locationEventLists;
  late List<String> locations;
  late int selectedLocationIndex;
+ late Set<String> descriptionSkipSet;
 
   LoginPage(this.events, {super.key}) {
     locationEventLists = findEventLocations(events);
     locations = locationEventLists.keys.toList();
     locations.sort();
+    descriptionSkipSet = {"All classes", "All undergraduate level classes", "All graduate level classes"};
     locations = ["All classes", "All undergraduate level classes", "All graduate level classes"] + locations;
     locationEventLists.addAll({
       "All classes": events,
@@ -251,7 +253,7 @@ class _LoginPageState extends State<LoginPage> {
                         margin: const EdgeInsets.symmetric(vertical: 5),
                         child: ListTile(
                           title: Text(widget.locations[index]),
-                          subtitle: Text(widget.locationEventLists[widget.locations[index]]!.map((element) => element.summary).join(", "), style: const TextStyle(fontSize: 10),),
+                          subtitle: (widget.descriptionSkipSet.contains(widget.locations[index])) ? null : Text(widget.locationEventLists[widget.locations[index]]!.map((element) => element.summary).join(", "), style: const TextStyle(fontSize: 10),),
                           onTap: () {
                             setState(() {
                               widget.selectedLocationIndex = index;
