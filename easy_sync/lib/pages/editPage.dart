@@ -140,10 +140,9 @@ String parseDescription(List<String> input) {
   return input.join(" ");
 }
 
-String parseLocation(List<String> locations, List<String> codes) {
+String parseLocation(List<String> locations) {
   String location = locations.isEmpty ? "no location given" : locations.join(" ").trim();
-  int code = int.parse(codes.isEmpty ? "000" : codes.join(" ").trim());
-  return "${(location == "") ? "no location given" : location} : ${code < 500 ? "Undergraduate" : "Graduate"}";
+  return (location == "") ? "no location given" : location;
 }
 
 String parseTime(List<List<String>> input, bool start) {
@@ -247,7 +246,6 @@ List<String> parseMeetingDays(String input) {
   return output;
 }
   
-
 String parseEndTime(String input) {
 
   if(input.isEmpty) {
@@ -309,4 +307,8 @@ List<String> parseRecurrenceRules(List<List<String>> input) {
 
   output.add(rule);
   return output;
+}
+
+bool parseGraduateLevel(List<String> input) {
+  return int.parse(input.isEmpty ? "000" : input.join(" ").trim()) >= 500;
 }
