@@ -25,7 +25,7 @@ class _EditPageState extends State<EditPage> {
     }
 
     return Frame(
-      title: "Edit Page",
+      // title: "Edit Page",
       onNextPressed: () {
         Navigator.push(
             context,

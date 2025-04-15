@@ -104,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Frame(
-      title: 'Login Page',
+      // title: 'Login Page',
       onNextPressed: () {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('No next page')),
