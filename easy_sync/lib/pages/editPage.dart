@@ -166,7 +166,10 @@ String parseTime(List<List<String>> input, bool start) {
 
   int adjustedDayInt = dayInt + (numDaysDifferent ?? 0);
 
-  if (adjustedDayInt > (NUM_DAYS_IN_MONTH[month] ?? 28)) {
+  int numDaysInMonth = NUM_DAYS_IN_MONTH[month] ?? 28;
+  if (month == "02" && (int.parse(year) % 4 == 0)) numDaysInMonth++; // If it's a leap year (year is multiple of 4), add one day to Feb
+
+  if (adjustedDayInt > numDaysInMonth) {
     int adjustedMonthInt = (int.parse(month) + 1) % 12;
     adjustedDayInt = adjustedDayInt % (NUM_DAYS_IN_MONTH[month] ?? 28);
     if (adjustedMonthInt < 10) {
