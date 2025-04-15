@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:easy_sync/tools/frame.dart';
 import 'package:easy_sync/tools/settings_provider.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +5,6 @@ import 'package:easy_sync/tools/auth_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:easy_sync/tools/calendar_tools.dart';
 import 'package:easy_sync/tools/event_struct.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Map<String, List<EventStruct>> findEventLocations(List<EventStruct> list) {
