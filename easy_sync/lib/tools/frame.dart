@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Frame extends StatefulWidget {
   final Widget child;
-  final String title;
+  final String? title;
   final VoidCallback? onNextPressed;
   final Color? nextColor;
   final Color? prevColor;
@@ -10,7 +10,7 @@ class Frame extends StatefulWidget {
 
   const Frame({
     super.key,
-    required this.title,
+    this.title,
     required this.child,
     this.onNextPressed,
     this.nextColor = Colors.blue,
@@ -26,8 +26,7 @@ class _FrameState extends State<Frame> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
-  
+        title: Text(widget.title ?? ""),
       ),
       //used to display add button throughout all pages
       body: widget.child,

@@ -114,7 +114,7 @@ class _InputPageState extends State<InputPage> {
     };
 
     return Frame(
-      title: 'Input',
+      // title: 'Input',
       onNextPressed: () {
         if (useDefaults) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage(widget.table.getEvents(questions))));
