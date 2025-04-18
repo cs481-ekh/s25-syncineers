@@ -8,7 +8,7 @@ on:
 
 jobs:
   main:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Clone repository
@@ -19,18 +19,14 @@ jobs:
         with:
           channel: stable
 
-      - name: Set Execution Policy for PowerShell
-        shell: pwsh
-        run: Set-ExecutionPolicy Unrestricted -Scope Process -Force
-
       - name: Run custom build script
-        shell: pwsh
-        run: .\build.ps1
+        shell: bash
+        run: ./build.sh
 
       - name: Run custom tests
-        shell: pwsh
-        run: .\test.ps1
+        shell: bash
+        run: ./test.sh
 
       - name: Clean build
-        shell: pwsh
-        run: .\clean.ps1
+        shell: bash
+        run: ./clean.sh
