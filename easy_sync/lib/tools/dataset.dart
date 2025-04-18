@@ -1,9 +1,11 @@
 import 'package:easy_sync/pages/editPage.dart';
 import 'package:easy_sync/tools/event_struct.dart';
+import 'package:easy_sync/tools/parsing_tools.dart';
 
 class Dataset {
   List<List<String>> information;
   int exampleIndex = 1;
+  final ParsingTools parser = ParsingTools();
 
   Dataset(this.information);
 
@@ -33,14 +35,14 @@ class Dataset {
           MapEntry(key, getColumnsFromRow(i, value.answerIndices)));
 
       output.add(EventStruct(
-        summary: parseSummary(answers["summary"]!),
-        description: parseDescription(answers["description"]!),
-        location: parseLocation(answers["location"]!),
-        startTime: parseTime([answers["first day"]!, answers["startTime"]!, answers["recurrenceRules"]!], true),
-        endTime: parseTime([answers["first day"]!, answers["startTime"]!, answers["recurrenceRules"]!], false),
-        timezone: parseTimezone([]),
-        recurrenceRules: parseRecurrenceRules([answers["recurrenceRules"]!, answers["last day"]!]),
-        isGraduateLevel: parseGraduateLevel(answers["catalog number"]!),
+        summary: parser.parseSummary(answers["summary"]!),
+        description: parser.parseDescription(answers["description"]!),
+        location: parser.parseLocation(answers["location"]!),
+        startTime: parser.parseTime([answers["first day"]!, answers["startTime"]!, answers["recurrenceRules"]!], true),
+        endTime: parser.parseTime([answers["first day"]!, answers["startTime"]!, answers["recurrenceRules"]!], false),
+        timezone: parser.parseTimezone([]),
+        recurrenceRules: parser.parseRecurrenceRules([answers["recurrenceRules"]!, answers["last day"]!]),
+        isGraduateLevel: parser.parseGraduateLevel(answers["catalog number"]!),
       ));
     }
 
