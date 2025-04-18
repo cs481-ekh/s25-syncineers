@@ -25,9 +25,9 @@ class _FrameState extends State<Frame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title ?? ""),
-      ),
+      // appBar: AppBar(
+      //   title: Text(widget.title ?? ""),
+      // ),
       //used to display add button throughout all pages
       body: widget.child,
       bottomNavigationBar: Column(
