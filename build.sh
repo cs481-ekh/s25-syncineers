@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e # Exit on error
 
+cd ~/easy_sync
+
 if find lib test -name '*.dart' | grep .; then
     echo "Flutter files found"
     echo "Installing Flutter dependencies..."
