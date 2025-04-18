@@ -116,11 +116,31 @@ class _InputPageState extends State<InputPage> {
     return Frame(
       // title: 'Input',
       onNextPressed: () {
-        if (useDefaults) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage(widget.table.getEvents(questions))));
+        if (fileName != null) {
+          if (useDefaults) {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage(widget.table.getEvents(questions))));
+          } else {
+            questions.forEach((key, value) {value.resetAnswers();});
+            Navigator.push(context, MaterialPageRoute(builder: (context) => EditPage(table: widget.table, questions: questions)));
+          }
         } else {
-          questions.forEach((key, value) {value.resetAnswers();});
-          Navigator.push(context, MaterialPageRoute(builder: (context) => EditPage(table: widget.table, questions: questions)));
+          showDialog(
+            context: context, 
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Missing File'),
+                content: const Text('Please upload a file before continuing'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false); // User cancels
+                    },
+                    child: const Text('Okay'),
+                  ),
+                ],
+              );
+            }
+          );
         }
       },
       prevColor: Colors.grey,
