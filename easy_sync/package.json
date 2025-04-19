@@ -1,0 +1,25 @@
+{
+  "name": "electron-easysync",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "clean": "flutter clean",
+    "build": "flutter build web",
+    "flutter_build": "flutter run -d web-server --web-port=7357",
+    "start-electron": "electron .",
+    "start": "npm run build-flutter && concurrently -k -s first -n SERVER,ELECTRON \"npm run serve\" \"npm run electron\"",
+    "build-flutter": "flutter build web",
+    "serve": "npx http-server ./build/web -p 7357 -c-1",
+    "electron": "npx wait-on http://localhost:7357 && electron .",
+    "test": "npm run build && node start2.js"
+  },
+  "author": "aflinn",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "electron": "^35.1.5",
+    "npm-run-all": "^4.1.5",
+    "wait-on": "^8.0.3"
+  }
+}
