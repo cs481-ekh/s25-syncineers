@@ -5,21 +5,38 @@
   "scripts": {
     "clean": "flutter clean",
     "build": "flutter build web",
-    "flutter_build": "flutter run -d web-server --web-port=7357",
-    "start-electron": "electron .",
-    "start": "npm run build-flutter && concurrently -k -s first -n SERVER,ELECTRON \"npm run serve\" \"npm run electron\"",
-    "build-flutter": "flutter build web",
+    "full-build": "npm run build && concurrently -k -s first -n SERVER,ELECTRON \"npm run serve\" \"npm run electron\"",
     "serve": "npx http-server ./build/web -p 7357 -c-1",
     "electron": "npx wait-on http://localhost:7357 && electron .",
-    "test": "npm run build && node start2.js"
+    "package": "electron-forge package",
+    "make": "electron-forge make --verbose --config forge.config.js",
+    "start": "electron-forge start",
+    "dist": "npm run build && electron-forge make --verbose"
   },
   "author": "aflinn",
   "license": "ISC",
-  "description": "",
+  "description": "A flutter project to upload calendar sets to google calendar",
   "devDependencies": {
+    "@electron-forge/cli": "^7.8.0",
+    "@electron-forge/maker-deb": "^7.8.0",
+    "@electron-forge/maker-rpm": "^7.8.0",
+    "@electron-forge/maker-squirrel": "^7.8.0",
+    "@electron-forge/maker-zip": "^7.8.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.8.0",
+    "@electron-forge/plugin-fuses": "^7.8.0",
+    "@electron/fuses": "^1.8.0",
     "concurrently": "^9.1.2",
     "electron": "^35.1.5",
-    "npm-run-all": "^4.1.5",
+    "npm-run-all": "^4.1.5"
+  },
+  "dependencies": {
+    "electron-is-dev": "^3.0.1",
+    "electron-squirrel-startup": "^1.0.1",
+    "finalhandler": "^1.3.1",
+    "http-server": "^14.1.1",
+    "portfinder": "^1.0.36",
+    "serve-static": "^1.15.0",
+    "server-static": "^2.0.5",
     "wait-on": "^8.0.3"
   }
 }
