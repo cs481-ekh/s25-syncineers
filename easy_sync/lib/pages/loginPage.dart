@@ -121,44 +121,56 @@ class _LoginPageState extends State<LoginPage> {
                 child: Center(
                   child: ElevatedButton(
                     onPressed: () async {
-                      
-                    if(_currentUser != null) {
-                      final bool confirmed = await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Confirm Event'),
-                            content: const Text('Do you want to create this event?'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(false); // User cancels
-                                },
-                                child: const Text('Cancel'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(true); // User confirms
-                                },
-                                child: const Text('Confirm'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
+                      final cal = await _prefs.getSelectedCal();
 
-                      if (confirmed && widget.selectedLocationIndex != -1) {
-                        final cal = await _prefs.getSelectedCal();
-                       
-                        createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), widget.locationEventLists[widget.locations[widget.selectedLocationIndex]]!);
+                      if (!context.mounted) {
+                        return;
                       }
-                    } else {
+                      
+                      if(_currentUser == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('No user signed in')),
+                          );
+                      } else if (cal == "") {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('No calendar selected')),
+                          );
+                      } else if (widget.selectedLocationIndex == -1) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('No user signed in')),
+                            const SnackBar(content: Text('No location group selected')),
                         );
+                      } else {
+                        final bool confirmed = await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Confirm Event'),
+                              content: const Text('Do you want to create this event?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false); // User cancels
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop(true); // User confirms
+                                  },
+                                  child: const Text('Confirm'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
+                        if (confirmed) {
+                            //createEvent(_currentUser!, await _prefs.getCalendarID(cal), event);
+                            createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), widget.locationEventLists[widget.locations[widget.selectedLocationIndex]]!);  
+                        }
                       }
                     },
-                  child: const Text('Create Events'),
+                    child: const Text('Create Events'),
                   ),
                 ),
               ),
@@ -167,52 +179,26 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 20),
             Row(
               children: [
-                _cal.isNotEmpty ? //display current calendar text
+                 //display currently selected calendar
                   Expanded(
                     child: Center(
-                      child: Text(
-                        "Current Calendar: $_cal", 
+                      child: Text( _cal.isNotEmpty ? "Current Calendar: $_cal" : "No calendar selected", 
                         style: const TextStyle(
                           fontSize: 16
                         ), 
                         textAlign: TextAlign.center,)
                       )
-                    ) 
-                  : const Expanded(
+                  ), 
+                  //display currently selected event location group
+                  Expanded(
                     child: Center(
-                      child: Text(
-                        "No calendar selected", 
-                        style: TextStyle(
-                          fontSize: 16
-                        ),
-                        textAlign: TextAlign.center
-                      )
-                    )
-                  ),
-
-                widget.selectedLocationIndex == -1 ? // display desired event location to upload to
-                  const Expanded(
-                    child: Center(
-                      child: Text(
-                        "No event location selected", 
-                        style: TextStyle(
-                          fontSize: 16
-                        ),
-                        textAlign: TextAlign.center
-                      )
-                    )
-                  ) 
-                  : Expanded(
-                    child: Center(
-                      child: Text(
+                      child: Text((widget.selectedLocationIndex == -1) ? "No event location selected" : 
                         "Current event location: ${widget.locations[widget.selectedLocationIndex]}", 
-                        style: const TextStyle(
-                          fontSize: 16
-                        ),
+                        style: const TextStyle(fontSize: 16),
                         textAlign: TextAlign.center
                       )
                     )
-                  ),
+                  )
               ]
             ),
             const SizedBox(height: 10),
