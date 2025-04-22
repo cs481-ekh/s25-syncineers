@@ -126,11 +126,40 @@ import 'event_struct.dart';
         createEvent(currentUser, calendarId, val);
         print('Event added: ${event.summary}');
 
-        await Future.delayed(const Duration(milliseconds: 300)); // Adjust delay as needed
+        await Future.delayed(const Duration(milliseconds: 270)); // Adjust delay as needed
       }
 
       client.close();
     } catch (e) {
       print('Failed to create events: $e');
+    }
+  }
+
+  void addCalendarToList(GoogleSignInAccount currentUser, String calendarName) async {
+    try {
+      final GoogleSignInAuthentication googleAuth = await currentUser.authentication;
+
+      final auth.AccessCredentials credentials = auth.AccessCredentials(
+        auth.AccessToken("Bearer", googleAuth.accessToken!, DateTime.now().toUtc()),
+        googleAuth.idToken,
+        ['https://www.googleapis.com/auth/calendar'],
+      );
+
+      final auth.AuthClient client = auth.authenticatedClient(
+        http.Client(),
+        credentials,
+      );
+
+      final calendar.CalendarApi calendarApi = calendar.CalendarApi(client);
+
+      final newCalendar = calendar.Calendar(summary: calendarName);
+
+      final createdCalendar = await calendarApi.calendars.insert(newCalendar);
+
+      print('Created new calendar with ID: ${createdCalendar.id}');
+
+      client.close();
+    } catch (e) {
+      print('Failed to add calendar to list: $e');
     }
   }

@@ -95,9 +95,7 @@ class _LoginPageState extends State<LoginPage> {
   void _handleSignIn(GoogleSignInAccount? account) {
     setState(() {
       _currentUser = account;
-   //   if (account != null) {
         _loadSettings();
-   //   }
     });
   }
 
@@ -152,7 +150,6 @@ class _LoginPageState extends State<LoginPage> {
                       if (confirmed && widget.selectedLocationIndex != -1) {
                         final cal = await _prefs.getSelectedCal();
                        
-                        //createEvent(_currentUser!, await _prefs.getCalendarID(cal), event);
                         createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), widget.locationEventLists[widget.locations[widget.selectedLocationIndex]]!);
                       }
                     } else {
@@ -265,17 +262,75 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             const SizedBox(height: 15),
-            Center(
-              child: ElevatedButton(
-                onPressed: () async {
-                  if (await canLaunchUrl(Uri.parse("http://calendar.google.com"))) {
-                    await launchUrl(Uri.parse("https://calendar.google.com"));
-                  } else {
-                    print("Error opening Google Calendar");
-                  }
-                }, 
-                child: const Text("Open Google Calendar")
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            final TextEditingController controller = TextEditingController();
+                            return AlertDialog(
+                              title: const Text('Create New Calendar Set'),
+                              content: TextField(
+                                controller: controller,
+                                decoration: const InputDecoration(
+                                  labelText: 'Enter calendar set name',
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop(); // Close the dialog
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    final String calendarSetName = controller.text.trim();
+                                    if (calendarSetName.isNotEmpty) {
+                                      if (_currentUser != null) {
+                                        addCalendarToList(_currentUser!, calendarSetName);
+                                        Navigator.of(context).pop(); // Close the dialog
+                                      } else {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('No user signed in')),
+                                        );
+                                      }
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Calendar set name cannot be empty')),
+                                      );
+                                    }
+                                  },
+                                  child: const Text('Create'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: const Text("Create new calendar set"),
+                    )
+                  ),
+                ),
+                Expanded(
+                  child: Center(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (await canLaunchUrl(Uri.parse("http://calendar.google.com"))) {
+                          await launchUrl(Uri.parse("https://calendar.google.com"));
+                        } else {
+                          print("Error opening Google Calendar");
+                        }
+                      }, 
+                      child: const Text("Open Google Calendar")
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),  
