@@ -123,53 +123,56 @@ class _LoginPageState extends State<LoginPage> {
                 child: Center(
                   child: ElevatedButton(
                     onPressed: () async {
+                      final cal = await _prefs.getSelectedCal();
 
-                    final cal = await _prefs.getSelectedCal();
-                      
-                    if(_currentUser == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('No user signed in')),
-                        );
-                    } else if (cal == "") {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('No calendar selected')),
-                      );
-                    } else if (widget.selectedLocationIndex == -1) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('No location group selected')),
-                      );
-                    } else {
-                      final bool confirmed = await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Confirm Event'),
-                            content: const Text('Do you want to create this event?'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(false); // User cancels
-                                },
-                                child: const Text('Cancel'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(true); // User confirms
-                                },
-                                child: const Text('Confirm'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-
-                      if (confirmed) {
-                          //createEvent(_currentUser!, await _prefs.getCalendarID(cal), event);
-                          createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), widget.locationEventLists[widget.locations[widget.selectedLocationIndex]]!);  
+                      if (!context.mounted) {
+                        return;
                       }
-                    }
-                  },
-                  child: const Text('Create Events'),
+                      
+                      if(_currentUser == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('No user signed in')),
+                          );
+                      } else if (cal == "") {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('No calendar selected')),
+                          );
+                      } else if (widget.selectedLocationIndex == -1) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('No location group selected')),
+                        );
+                      } else {
+                        final bool confirmed = await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Confirm Event'),
+                              content: const Text('Do you want to create this event?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false); // User cancels
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop(true); // User confirms
+                                  },
+                                  child: const Text('Confirm'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
+                        if (confirmed) {
+                            //createEvent(_currentUser!, await _prefs.getCalendarID(cal), event);
+                            createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), widget.locationEventLists[widget.locations[widget.selectedLocationIndex]]!);  
+                        }
+                      }
+                    },
+                    child: const Text('Create Events'),
                   ),
                 ),
               ),
