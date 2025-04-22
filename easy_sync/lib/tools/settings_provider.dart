@@ -1,6 +1,4 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-
 
 class SharedPreferencesManager {
 
@@ -102,6 +100,22 @@ class SharedPreferencesManager {
   Future<String> getSelectedCal() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(selectedCalKey) ?? '';
+  }
+
+  addCalendarSetToList(String calendarName, String calendarID) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    List<String> currentCalList = prefs.getStringList(calendarNameKey) ?? [];
+    // Add the new calendar to the list
+    currentCalList.add(calendarName);
+
+    List<String> currentCalIDList = prefs.getStringList(calendarIDKey) ?? [];
+    // Add the new calendar ID to the list
+    currentCalIDList.add(calendarID);
+
+    // Save the updated list back to SharedPreferences
+    await prefs.setStringList(calendarNameKey, currentCalList);
+    await prefs.setStringList(calendarIDKey, currentCalIDList);
   }
 
 }

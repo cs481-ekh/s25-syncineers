@@ -135,7 +135,7 @@ import 'event_struct.dart';
     }
   }
 
-  void addCalendarToList(GoogleSignInAccount currentUser, String calendarName) async {
+  Future<void> addCalendarToList(GoogleSignInAccount currentUser, String calendarName) async {
     try {
       final GoogleSignInAuthentication googleAuth = await currentUser.authentication;
 
@@ -157,6 +157,13 @@ import 'event_struct.dart';
       final createdCalendar = await calendarApi.calendars.insert(newCalendar);
 
       print('Created new calendar with ID: ${createdCalendar.id}');
+    
+      
+      // Save the updated list back to SharedPreferences
+      await _prefs.addCalendarSetToList(calendarName, createdCalendar.id!);
+      
+      // Save the calendar ID for future reference
+      //await _prefs.setCalendarID(calendarName, createdCalendar.id!);
 
       client.close();
     } catch (e) {

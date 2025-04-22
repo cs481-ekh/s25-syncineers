@@ -287,13 +287,52 @@ class _LoginPageState extends State<LoginPage> {
                                   },
                                   child: const Text('Cancel'),
                                 ),
+                                // TextButton(
+                                //   onPressed: () async {
+                                //     final String calendarSetName = controller.text.trim();
+                                //     if (calendarSetName.isNotEmpty) {
+                                //       if (_currentUser != null) {
+
+                                //         Navigator.of(context).pop(); // Close the dialog first for better UX
+        
+                                //         // Show a loading indicator
+                                //         ScaffoldMessenger.of(context).showSnackBar(
+                                //           const SnackBar(content: Text('Creating calendar set...')),
+                                //         );
+                                //         await addCalendarToList(_currentUser!, calendarSetName);
+
+                                //         setState(() {
+                                //          _loadSettings(); // This will trigger the loading of updated calendar list
+                                //          });
+                                //         // Show a success message
+                                //         ScaffoldMessenger.of(context).showSnackBar(
+                                //           SnackBar(content: Text('Calendar set "$calendarSetName" created')),
+                                //         );
+                                //       } else {
+                                //         ScaffoldMessenger.of(context).showSnackBar(
+                                //           const SnackBar(content: Text('No user signed in')),
+                                //         );
+                                //       }
+                                //     } else {
+                                //       ScaffoldMessenger.of(context).showSnackBar(
+                                //         const SnackBar(content: Text('Calendar set name cannot be empty')),
+                                //       );
+                                //     }
+                                //   },
+                                //   child: const Text('Create'),
+                                // ),
                                 TextButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     final String calendarSetName = controller.text.trim();
                                     if (calendarSetName.isNotEmpty) {
                                       if (_currentUser != null) {
-                                        addCalendarToList(_currentUser!, calendarSetName);
-                                        Navigator.of(context).pop(); // Close the dialog
+                                        await addCalendarToList(_currentUser!, calendarSetName);
+                                        
+                                        Navigator.of(context).pop();
+                                        
+                                        setState(() {
+                                          _loadSettings();
+                                        });
                                       } else {
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           const SnackBar(content: Text('No user signed in')),
@@ -306,7 +345,8 @@ class _LoginPageState extends State<LoginPage> {
                                     }
                                   },
                                   child: const Text('Create'),
-                                ),
+                                )
+
                               ],
                             );
                           },
