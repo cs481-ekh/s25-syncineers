@@ -143,7 +143,7 @@ class _InputPageState extends State<InputPage> {
           );
         }
       },
-      prevColor: Colors.grey,
+      // prevColor: Colors.grey,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

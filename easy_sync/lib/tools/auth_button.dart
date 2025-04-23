@@ -34,11 +34,14 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
       setState(() {
         _currentUser = account;
-       // print('Current user in auth button: $_currentUser');
-        _prefs.setUser(_currentUser);
-       // if(_currentUser != null) {
-          widget.onSignIn(_currentUser);
-      //  }
+        
+        if (account != null) {
+          _prefs.setUser(account);
+        } else {
+            // If account is null, clear the user data
+          _prefs.clearUser();
+        }
+        widget.onSignIn(_currentUser);
       });
     });
     // Attempt to sign in silently upon app start.
