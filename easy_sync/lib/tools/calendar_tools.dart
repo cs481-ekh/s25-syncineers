@@ -129,7 +129,7 @@ import 'event_struct.dart';
         createEvent(currentUser, calendarId, val);
         print('Event added: ${event.summary}');
 
-        updateFunction(++eventCounter,events.length);//TODO fixme
+        updateFunction(++eventCounter,events.length);
 
         await Future.delayed(const Duration(milliseconds: 270)); // Adjust delay as needed
       }
