@@ -89,7 +89,9 @@ import 'event_struct.dart';
     }
   }
 
-  void createMultipleEvents(GoogleSignInAccount currentUser, String calendarId, List<EventStruct> events) async {
+  void createMultipleEvents(GoogleSignInAccount currentUser, String calendarId, List<EventStruct> events, Function() startFunction, Function(int asdfl, int asdfkj) updateFunction, Function() endFunction) async {
+    startFunction();
+    
     try {
       final GoogleSignInAuthentication googleAuth = await currentUser.authentication;
 
@@ -105,6 +107,7 @@ import 'event_struct.dart';
       );
 
       final calendar.CalendarApi calendarApi = calendar.CalendarApi(client);
+      int eventCounter = 0;
 
       for (var val in events) {
         final calendar.Event event = calendar.Event(
@@ -126,6 +129,8 @@ import 'event_struct.dart';
         createEvent(currentUser, calendarId, val);
         print('Event added: ${event.summary}');
 
+        updateFunction(++eventCounter,events.length);
+
         await Future.delayed(const Duration(milliseconds: 270)); // Adjust delay as needed
       }
 
@@ -133,6 +138,8 @@ import 'event_struct.dart';
     } catch (e) {
       print('Failed to create events: $e');
     }
+
+    endFunction();
   }
 
   Future<void> addCalendarToList(GoogleSignInAccount currentUser, String calendarName) async {
