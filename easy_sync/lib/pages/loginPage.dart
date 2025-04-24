@@ -56,6 +56,9 @@ class _LoginPageState extends State<LoginPage> {
   String _photoUrl = 'photoUrl';
   String _serverAuthCode = 'serverAuthCode';
 
+  bool isUploading = false;
+  double uploadPercentage = 0;
+
   @override
   void initState() {
     super.initState();
@@ -90,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
         _calList = updatedCalendarList;
       });
     }
-    }
+  }
     
   void _handleSignIn(GoogleSignInAccount? account) {
     setState(() {
@@ -101,232 +104,260 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    if ((isUploading)) {
+      return Stack(children: [
+        loginMainPage(context),
+        const ModalBarrier(dismissible: false,),
+        Container(color: const Color.fromARGB(67, 67, 67, 67),),
+        Center(child: CircularProgressIndicator(value: uploadPercentage))
+      ],);
+    } else {
+      return loginMainPage(context);
+    }
+  }
+
+  Frame loginMainPage(BuildContext context) {
     return Frame(
-      // title: 'Login Page',
-      onNextPressed: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No next page')),
-        );
-      },
-      nextColor: Colors.grey,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(child: Center(child: GoogleSignInButton(onSignIn: _handleSignIn))),
+    // title: 'Login Page',
+    onNextPressed: () {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No next page')),
+      );
+    },
+    nextColor: Colors.grey,
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Center(child: GoogleSignInButton(onSignIn: _handleSignIn))),
+              Expanded(
+              child: Center(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final cal = await _prefs.getSelectedCal();
+
+                    if (!context.mounted) {
+                      return;
+                    }
+                    
+                    if(_currentUser == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('No user signed in')),
+                        );
+                    } else if (cal == "") {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('No calendar selected')),
+                        );
+                    } else if (widget.selectedLocationIndex == -1) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('No location group selected')),
+                      );
+                    } else {
+                      final bool confirmed = await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Confirm Event'),
+                            content: const Text('Do you want to create this event?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(false); // User cancels
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(true); // User confirms
+                                },
+                                child: const Text('Confirm'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+
+                      if (confirmed) {
+                        startFunction() {
+                          isUploading = true;
+                          uploadPercentage = 0;
+                          setState(() {});
+                        }
+                        updateFunction(int progress, int total) {
+                          uploadPercentage = progress / total;
+                          setState(() {});
+                        }
+                        endFunction() {
+                          isUploading = false;
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Events uploaded')),);
+                          setState(() {});
+                        }
+
+                        //createEvent(_currentUser!, await _prefs.getCalendarID(cal), event);
+                        createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), widget.locationEventLists[widget.locations[widget.selectedLocationIndex]]!, startFunction, updateFunction, endFunction);
+                      }
+                    }
+                  },
+                  child: const Text('Create Events'),
+                ),
+              ),
+            ),
+            ]
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              //display currently selected calendar
                 Expanded(
+                  child: Center(
+                    child: Text( _cal.isNotEmpty ? "Current Calendar: $_cal" : "No calendar selected", 
+                      style: const TextStyle(
+                        fontSize: 16
+                      ), 
+                      textAlign: TextAlign.center,)
+                    )
+                ), 
+                //display currently selected event location group
+                Expanded(
+                  child: Center(
+                    child: Text((widget.selectedLocationIndex == -1) ? "No event location selected" : 
+                      "Current event location: ${widget.locations[widget.selectedLocationIndex]}", 
+                      style: const TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center
+                    )
+                  )
+                )
+            ]
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: ListView.builder(
+                  itemCount: _calList.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      margin: const EdgeInsets.symmetric(vertical: 5),
+                      child: ListTile(
+                        title: Text(_calList[index]),
+                        onTap: () {
+                          _prefs.setSelectedCal(_calList[index]);
+                          _loadSettings();
+                        },
+                      ),
+                    );
+                  },
+                  ),
+                ),
+                const SizedBox(width: 10), //space between listviews
+                Expanded(
+                  flex: 1,
+                  child: ListView.builder(
+                  itemCount: widget.locations.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      margin: const EdgeInsets.symmetric(vertical: 5),
+                      child: ListTile(
+                        title: Text(widget.locations[index]),
+                        subtitle: (widget.descriptionSkipSet.contains(widget.locations[index])) ? null : Text(widget.locationEventLists[widget.locations[index]]!.map((element) => element.summary).join(", "), style: const TextStyle(fontSize: 10),),
+                        onTap: () {
+                          setState(() {
+                            widget.selectedLocationIndex = index;
+                          });
+                        },
+                      ),
+                    );
+                  },
+                  ),
+                )
+              ]
+            ),
+          ),
+          const SizedBox(height: 15),
+          Row(
+            children: [
+              Expanded(
+                child: Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          final TextEditingController controller = TextEditingController();
+                          return AlertDialog(
+                            title: const Text('Create New Calendar Set'),
+                            content: TextField(
+                              controller: controller,
+                              decoration: const InputDecoration(
+                                labelText: 'Enter calendar set name',
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // Close the dialog
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  final String calendarSetName = controller.text.trim();
+                                  if (calendarSetName.isNotEmpty) {
+                                    if (_currentUser != null) {
+                                      await addCalendarToList(_currentUser!, calendarSetName);
+                                      
+                                      Navigator.of(context).pop();
+                                      
+                                      setState(() {
+                                        _loadSettings();
+                                      });
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('No user signed in')),
+                                      );
+                                    }
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Calendar set name cannot be empty')),
+                                    );
+                                  }
+                                },
+                                child: const Text('Create'),
+                              )
+
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: const Text("Create new calendar set"),
+                  )
+                ),
+              ),
+              Expanded(
                 child: Center(
                   child: ElevatedButton(
                     onPressed: () async {
-                      final cal = await _prefs.getSelectedCal();
-
-                      if (!context.mounted) {
-                        return;
-                      }
-                      
-                      if(_currentUser == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('No user signed in')),
-                          );
-                      } else if (cal == "") {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('No calendar selected')),
-                          );
-                      } else if (widget.selectedLocationIndex == -1) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('No location group selected')),
-                        );
+                      if (await canLaunchUrl(Uri.parse("http://calendar.google.com"))) {
+                        await launchUrl(Uri.parse("https://calendar.google.com"));
                       } else {
-                        final bool confirmed = await showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Confirm Event'),
-                              content: const Text('Do you want to create this event?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop(false); // User cancels
-                                  },
-                                  child: const Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop(true); // User confirms
-                                  },
-                                  child: const Text('Confirm'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-
-                        if (confirmed) {
-                            //createEvent(_currentUser!, await _prefs.getCalendarID(cal), event);
-                            createMultipleEvents(_currentUser!, await _prefs.getCalendarID(cal), widget.locationEventLists[widget.locations[widget.selectedLocationIndex]]!);  
-                        }
+                        print("Error opening Google Calendar");
                       }
-                    },
-                    child: const Text('Create Events'),
+                    }, 
+                    child: const Text("Open Google Calendar")
                   ),
                 ),
               ),
-              ]
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                 //display currently selected calendar
-                  Expanded(
-                    child: Center(
-                      child: Text( _cal.isNotEmpty ? "Current Calendar: $_cal" : "No calendar selected", 
-                        style: const TextStyle(
-                          fontSize: 16
-                        ), 
-                        textAlign: TextAlign.center,)
-                      )
-                  ), 
-                  //display currently selected event location group
-                  Expanded(
-                    child: Center(
-                      child: Text((widget.selectedLocationIndex == -1) ? "No event location selected" : 
-                        "Current event location: ${widget.locations[widget.selectedLocationIndex]}", 
-                        style: const TextStyle(fontSize: 16),
-                        textAlign: TextAlign.center
-                      )
-                    )
-                  )
-              ]
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: ListView.builder(
-                    itemCount: _calList.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 5),
-                        child: ListTile(
-                          title: Text(_calList[index]),
-                          onTap: () {
-                            _prefs.setSelectedCal(_calList[index]);
-                            _loadSettings();
-                          },
-                        ),
-                      );
-                    },
-                    ),
-                  ),
-                  const SizedBox(width: 10), //space between listviews
-                  Expanded(
-                    flex: 1,
-                    child: ListView.builder(
-                    itemCount: widget.locations.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 5),
-                        child: ListTile(
-                          title: Text(widget.locations[index]),
-                          subtitle: (widget.descriptionSkipSet.contains(widget.locations[index])) ? null : Text(widget.locationEventLists[widget.locations[index]]!.map((element) => element.summary).join(", "), style: const TextStyle(fontSize: 10),),
-                          onTap: () {
-                            setState(() {
-                              widget.selectedLocationIndex = index;
-                            });
-                          },
-                        ),
-                      );
-                    },
-                    ),
-                  )
-                ]
-              ),
-            ),
-            const SizedBox(height: 15),
-            Row(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            final TextEditingController controller = TextEditingController();
-                            return AlertDialog(
-                              title: const Text('Create New Calendar Set'),
-                              content: TextField(
-                                controller: controller,
-                                decoration: const InputDecoration(
-                                  labelText: 'Enter calendar set name',
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop(); // Close the dialog
-                                  },
-                                  child: const Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    final String calendarSetName = controller.text.trim();
-                                    if (calendarSetName.isNotEmpty) {
-                                      if (_currentUser != null) {
-                                        await addCalendarToList(_currentUser!, calendarSetName);
-                                        
-                                        Navigator.of(context).pop();
-                                        
-                                        setState(() {
-                                          _loadSettings();
-                                        });
-                                      } else {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text('No user signed in')),
-                                        );
-                                      }
-                                    } else {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Calendar set name cannot be empty')),
-                                      );
-                                    }
-                                  },
-                                  child: const Text('Create'),
-                                )
-
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      child: const Text("Create new calendar set"),
-                    )
-                  ),
-                ),
-                Expanded(
-                  child: Center(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        if (await canLaunchUrl(Uri.parse("http://calendar.google.com"))) {
-                          await launchUrl(Uri.parse("https://calendar.google.com"));
-                        } else {
-                          print("Error opening Google Calendar");
-                        }
-                      }, 
-                      child: const Text("Open Google Calendar")
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),  
-      )
-    );
+            ],
+          ),
+        ],
+      ),  
+    )
+  );
   }
 }
