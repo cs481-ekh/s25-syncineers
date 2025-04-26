@@ -12,3 +12,5 @@ Boise State University administrators currently spend hours manually inputting c
 ## Project Description
 
 
+
+![SDP-Logo](images/sdp-logo.png.PNG?raw=true)
