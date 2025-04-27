@@ -90,6 +90,7 @@ async function createWindow() {
     mainWindow = new BrowserWindow({
       width: 1000,
       height: 800,
+      icon: path.join(__dirname, 'web', 'favicon.png'),
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true
