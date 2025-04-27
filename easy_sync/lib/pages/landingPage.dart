@@ -33,7 +33,14 @@ class LandingPage extends StatelessWidget {
             const Text(
               "This program takes in CSV, XLS, and XLSX files and parses their data, then uploading it to Google Calendar"
             ),
-            const SizedBox(height: 100,),
+            const SizedBox(height: 25,),
+            const Text(
+              "To navigate the app, hit the 'Previous Page' and 'Next Page' buttons at the bottom of the app."
+            ),
+            const Text(
+              "To get more information about a page, hit the information (i) button on the page."
+            ),
+            const SizedBox(height: 12,),
             Tooltip(
               message: "This website was created for a\n"
                       "Boise State University\n" 
