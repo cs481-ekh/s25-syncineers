@@ -25,7 +25,6 @@ class _EditPageState extends State<EditPage> {
     }
 
     return Frame(
-      // title: "Edit Page",
       onNextPressed: () {
         Navigator.push(
             context,
@@ -33,9 +32,48 @@ class _EditPageState extends State<EditPage> {
                 builder: (context) =>
                     LoginPage(widget.table.getEvents(widget.questions))));
       },
-      child: (questionIndex >= widget.questions.length)
-          ? questionsComplete()
-          : askCurrentQuestion(),
+      child: Stack(
+        children: [
+          (questionIndex >= widget.questions.length)
+            ? questionsComplete()
+            : askCurrentQuestion(),
+          Container(
+            alignment: Alignment.bottomRight,
+            child: IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context, 
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: SizedBox(
+                        width: 800,
+                        child: Image.asset(
+                          "assets/Instruction2.png",
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: Navigator.of(context).pop, 
+                          child: const Text(
+                            "Close",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 35,
+                              fontFamily: 'Helvetica'
+                            ),
+                          )
+                        )
+                      ],
+                    );
+                  }
+                );
+              }, 
+              icon: const Icon(Icons.info)
+            ),
+          )
+        ]
+      )
     );
   }
 
@@ -52,8 +90,10 @@ class _EditPageState extends State<EditPage> {
           ),
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             previousQuestion(),
+            const SizedBox(width: 75,),
             nextQuestion(),
           ],
         ),
@@ -61,27 +101,27 @@ class _EditPageState extends State<EditPage> {
     );
   }
 
-  Expanded nextQuestion() {
-    return Expanded(
-      child: FilledButton(
+  /* Expanded */ nextQuestion() {
+    return /* Expanded(
+      child: */ FilledButton(
           onPressed: () {
             setState(() {
               questionIndex++;
             });
           },
-          child: const Text("Next question")),
+          child: const Text("Next question")//),
     );
   }
 
-  Expanded previousQuestion() {
-    return Expanded(
-      child: FilledButton(
+  /* Expanded */ previousQuestion() {
+    return /* Expanded(
+      child: */ FilledButton(
           onPressed: () {
             setState(() {
               questionIndex--;
             });
           },
-          child: const Text("Previous question")),
+          child: const Text("Previous question") //),
     );
   }
 
