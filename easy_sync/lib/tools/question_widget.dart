@@ -1,6 +1,7 @@
 import 'package:easy_sync/pages/editPage.dart';
 import 'package:easy_sync/tools/dataset.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class QuestionWidget extends StatelessWidget {
   const QuestionWidget({
@@ -22,20 +23,29 @@ class QuestionWidget extends StatelessWidget {
         .map((index) => selectableAnswers.getExample(index))
         .join(" ");
 
-    return Card(
-      child: Column(
-        children: [
-          Text(questionAndAnswerIndices.question),
-          Row(
-            children: [
-              previousExampleButton(),
-              exampleText(example),
-              nextExampleButton(),
-            ],
-          ),
-          selectedAnswersWidget(),
-          selectableAnswersWidget(),
-        ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        child: Column(
+          children: [
+            Text(
+              questionAndAnswerIndices.question,
+              style: GoogleFonts.titilliumWeb(
+                color: Colors.black,
+                fontSize: 20,   
+              ),
+            ),
+            Row(
+              children: [
+                previousExampleButton(),
+                exampleText(example),
+                nextExampleButton(),
+              ],
+            ),
+            selectedAnswersWidget(),
+            selectableAnswersWidget(),
+          ],
+        ),
       ),
     );
   }
@@ -45,7 +55,12 @@ class QuestionWidget extends StatelessWidget {
     var numColumns = selectableAnswers.numColumns();
 
     someText(index) => Text(
-        "${selectableAnswers.getTitle(index)} | ${selectableAnswers.getExample(index)}");
+        "${selectableAnswers.getTitle(index)} | ${selectableAnswers.getExample(index)}",
+        style: GoogleFonts.titilliumWeb(
+          color: Colors.black,
+          fontSize: 16,
+        )
+      );
     someAction(index) => questionAndAnswerIndices.answerIndices.add(index);
 
     return interactiveList(flex, numColumns, someText, someAction);
@@ -56,7 +71,12 @@ class QuestionWidget extends StatelessWidget {
     var numColumns = questionAndAnswerIndices.answerIndices.length;
 
     someText(index) => Text(selectableAnswers
-        .getTitle(questionAndAnswerIndices.answerIndices[index]));
+        .getTitle(questionAndAnswerIndices.answerIndices[index]),
+        style: GoogleFonts.titilliumWeb(
+          color: Colors.black,
+          fontSize: 16,
+        )
+      );
     someAction(index) => questionAndAnswerIndices.answerIndices.removeAt(index);
 
     return interactiveList(flex, numColumns, someText, someAction);
@@ -84,27 +104,60 @@ class QuestionWidget extends StatelessWidget {
 
   FilledButton nextExampleButton() {
     return FilledButton(
-        onPressed: () {
-          callBackFunction();
-          selectableAnswers.nextExample();
-        },
-        child: const Text("Next example"));
+      onPressed: () {
+        callBackFunction();
+        selectableAnswers.nextExample();
+      },
+      child: Text(
+        "Next example",
+        style: GoogleFonts.titilliumWeb(
+          color: Colors.white,
+          fontSize: 16,
+        )
+      )
+    );
   }
 
   Expanded exampleText(String example) {
     return Expanded(
-        child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text("Example output: $example"),
-    ));
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Text(
+              "Example output: ",
+              style: GoogleFonts.titilliumWeb(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              example,
+              style: GoogleFonts.titilliumWeb(
+                color: Colors.black,
+                fontSize: 16,
+              ),
+            ),
+          ],
+        )
+      )
+    );
   }
 
   FilledButton previousExampleButton() {
     return FilledButton(
-        onPressed: () {
-          selectableAnswers.previousExample();
-          callBackFunction();
-        },
-        child: const Text("Previous example"));
+      onPressed: () {
+        selectableAnswers.previousExample();
+        callBackFunction();
+      },
+      child: Text(
+        "Previous example",
+        style: GoogleFonts.titilliumWeb(
+          color: Colors.white,
+          fontSize: 16,
+        )
+      )
+    );
   }
 }

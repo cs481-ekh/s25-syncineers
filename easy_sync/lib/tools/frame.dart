@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Frame extends StatefulWidget {
   final Widget child;
@@ -44,7 +45,14 @@ class _FrameState extends State<Frame> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: widget.prevColor,
                   ),
-                  child: const Text('Previous Page'),
+                  child: Text(
+                    'Previous Page',
+                    style: GoogleFonts.titilliumWeb(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
                 ElevatedButton(
                   key: const Key('next_button'),
@@ -52,7 +60,14 @@ class _FrameState extends State<Frame> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: widget.nextColor,
                   ),
-                  child: const Text('Next Page'),
+                  child: Text(
+                    'Next Page',
+                    style: GoogleFonts.titilliumWeb(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ],
             ),
