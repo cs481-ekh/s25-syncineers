@@ -144,47 +144,86 @@ class _InputPageState extends State<InputPage> {
         }
       },
       // prevColor: Colors.grey,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            if (fileName != null) const SizedBox(height: 50,),
-            IconButton(
-              onPressed: getFile, 
-              icon: const Icon(Icons.file_open, color: Colors.blue, size: 100.0),
-            ),
-            if (fileName != null)
-            SizedBox(
-              height: 250,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'File uploaded: $fileName',
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 35,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+      child: Stack(
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (fileName != null) const SizedBox(height: 50,),
+                IconButton(
+                  onPressed: getFile, 
+                  icon: const Icon(Icons.file_open, color: Colors.blue, size: 100.0),
+                ),
+                if (fileName != null)
+                SizedBox(
+                  height: 250,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Checkbox(
-                        value: useDefaults, 
-                        onChanged: (bool? value) {
-                          setState(() {
-                            useDefaults = value!;
-                          });
-                          print("Use defaults: $useDefaults");
-                        }
+                      Text(
+                        'File uploaded: $fileName',
+                        textAlign: TextAlign.center,
                       ),
-                      const Text("Use defaults")
+                      const SizedBox(height: 35,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Checkbox(
+                            value: useDefaults, 
+                            onChanged: (bool? value) {
+                              setState(() {
+                                useDefaults = value!;
+                              });
+                              print("Use defaults: $useDefaults");
+                            }
+                          ),
+                          const Text("Use defaults")
+                        ],
+                      ),
                     ],
                   )
-                ],
-              )
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Container(
+            alignment: Alignment.bottomRight,
+            child: IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context, 
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      content: SizedBox(
+                        width: 800,
+                        child: Image.asset(
+                          "assets/Instruction1.png",
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: Navigator.of(context).pop, 
+                          child: const Text(
+                            "Close",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 35,
+                              fontFamily: 'Helvetica'
+                            ),
+                          )
+                        )
+                      ],
+                    );
+                  }
+                );
+              }, 
+              icon: const Icon(Icons.info)
+            ),
+          )
+        ]
       ),
     );
   }
