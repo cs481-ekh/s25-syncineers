@@ -2,7 +2,7 @@
 
 
 # Easy Sync
-BSU CS481 Capstone project template
+BSU CS481 Capstone project
 
 
 ### Installing and Running
