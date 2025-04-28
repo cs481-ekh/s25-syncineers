@@ -119,12 +119,6 @@ class _LoginPageState extends State<LoginPage> {
 
   Frame loginMainPage(BuildContext context) {
     return Frame(
-    // title: 'Login Page',
-    // onNextPressed: () {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(content: Text('No next page')),
-    //   );
-    // },
     nextColor: Colors.grey,
     child: Padding(
       padding: const EdgeInsets.all(16.0),

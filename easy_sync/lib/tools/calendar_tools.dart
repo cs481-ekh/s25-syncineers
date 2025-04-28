@@ -28,7 +28,6 @@ import 'event_struct.dart';
 
       List<String> calendarIds = [];
       List<String> calendarSummaries = [];
-      // _prefs.setUserCalendarSets(calendarList.items?.toString());
 
       for (var item in calendarList.items ?? []) {
         calendarSummaries.add(item.summary!);
@@ -54,8 +53,6 @@ import 'event_struct.dart';
       client.close();
     } catch (e) {
       print('Failed to get calendar list: $e');
-
-    
     }
   }
 
@@ -135,9 +132,7 @@ import 'event_struct.dart';
           recurrence: val.recurrenceRules,
         );
 
-       // await calendarApi.events.insert(event, calendarId);
         createEvent(currentUser, calendarId, val);
-        //print('Event added: ${event.summary}');
 
         updateFunction(++eventCounter,events.length);
 
@@ -172,8 +167,6 @@ import 'event_struct.dart';
       final newCalendar = calendar.Calendar(summary: calendarName);
 
       final createdCalendar = await calendarApi.calendars.insert(newCalendar);
-
-     // print('Created new calendar with ID: ${createdCalendar.id}');
     
       // save the updated list back to SharedPreferences
       await _prefs.addCalendarSetToList(calendarName, createdCalendar.id!);
