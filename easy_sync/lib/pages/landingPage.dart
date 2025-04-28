@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LandingPage extends StatelessWidget {
+  const LandingPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Frame(
@@ -26,19 +28,36 @@ class LandingPage extends StatelessWidget {
                 fontStyle: FontStyle.italic,
               ),
             ),
-            const Text(
-              "The Google Calendar uploader"
+            Text(
+              "The Google Calendar uploader",
+              style: GoogleFonts.titilliumWeb(
+                color: Colors.black,
+                fontSize: 24,
+              ),
             ),
             const SizedBox(height: 25,),
-            const Text(
-              "This program takes in CSV, XLS, and XLSX files and parses their data, then uploading it to Google Calendar"
+            Text(
+              "This program takes in CSV, XLS, and XLSX files and parses their data, then uploading it to Google Calendar",
+              style: GoogleFonts.titilliumWeb(
+                color: Colors.black,
+                fontSize: 16,
+              ),
+            
             ),
             const SizedBox(height: 25,),
-            const Text(
-              "To navigate the app, hit the 'Previous Page' and 'Next Page' buttons at the bottom of the app."
+            Text(
+              "To navigate the app, click on the 'Previous Page' and 'Next Page' buttons at the bottom of the screen.",
+              style: GoogleFonts.titilliumWeb(
+                color: Colors.black,
+                fontSize: 16,
+              ),
             ),
-            const Text(
-              "To get more information about a page, hit the information (i) button on the page."
+            Text(
+              "To get more information about a page, hit the information (i) button at the bottom corner of the page.",
+              style: GoogleFonts.titilliumWeb(
+                color: Colors.black,
+                fontSize: 16,
+              ),
             ),
             const SizedBox(height: 12,),
             Tooltip(

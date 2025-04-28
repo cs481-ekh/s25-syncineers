@@ -102,15 +102,15 @@ class _InputPageState extends State<InputPage> {
   @override
   Widget build(BuildContext context) {
     final Map<String, QuestionAndAnswers> questions = {
-      "summary": QuestionAndAnswers.withAnswers("How is each event title constructed", [0, 1, 7, 2]),
-      "catalog number": QuestionAndAnswers.withAnswers("What is the catalog number", [1]),
-      "location": QuestionAndAnswers.withAnswers("Where is the event Located", [19]),
+      "summary": QuestionAndAnswers.withAnswers("How is each event title constructed?", [0, 1, 7, 2]),
+      "catalog number": QuestionAndAnswers.withAnswers("What is the catalog number?", [1]),
+      "location": QuestionAndAnswers.withAnswers("Where is the event Located?", [19]),
       "description": QuestionAndAnswers.withAnswers("While not needed. If you want to add a description, then you can build one here.", []),
-      "first day" : QuestionAndAnswers.withAnswers("Which column contains the first day", [14]),
-      "last day" : QuestionAndAnswers.withAnswers("Which column contains the last day", [14]),
-      "startTime" : QuestionAndAnswers.withAnswers("Which column contains the start time", [16]), 
-      "endTime" : QuestionAndAnswers.withAnswers("Which column contains the end time", [16]),
-      "recurrenceRules" : QuestionAndAnswers.withAnswers("Which column contains which days of the week are repeated", [16]),
+      "first day" : QuestionAndAnswers.withAnswers("Which column contains the first day?", [14]),
+      "last day" : QuestionAndAnswers.withAnswers("Which column contains the last day?", [14]),
+      "startTime" : QuestionAndAnswers.withAnswers("Which column contains the start time?", [16]), 
+      "endTime" : QuestionAndAnswers.withAnswers("Which column contains the end time?", [16]),
+      "recurrenceRules" : QuestionAndAnswers.withAnswers("Which column contains which days of the week are repeated?", [16]),
     };
 
     return Frame(

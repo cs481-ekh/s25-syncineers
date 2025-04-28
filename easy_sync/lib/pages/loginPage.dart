@@ -2,6 +2,7 @@ import 'package:easy_sync/tools/frame.dart';
 import 'package:easy_sync/tools/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_sync/tools/auth_button.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:easy_sync/tools/calendar_tools.dart';
 import 'package:easy_sync/tools/event_struct.dart';
@@ -119,11 +120,11 @@ class _LoginPageState extends State<LoginPage> {
   Frame loginMainPage(BuildContext context) {
     return Frame(
     // title: 'Login Page',
-    onNextPressed: () {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No next page')),
-      );
-    },
+    // onNextPressed: () {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(content: Text('No next page')),
+    //   );
+    // },
     nextColor: Colors.grey,
     child: Padding(
       padding: const EdgeInsets.all(16.0),
@@ -135,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
               Expanded(child: Center(child: GoogleSignInButton(onSignIn: _handleSignIn))),
               Expanded(
               child: Center(
-                child: ElevatedButton(
+                child: FilledButton(
                   onPressed: () async {
                     final cal = await _prefs.getSelectedCal();
 
@@ -144,36 +145,68 @@ class _LoginPageState extends State<LoginPage> {
                     }
                     
                     if(_currentUser == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('No user signed in')),
-                        );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('No user signed in',
+                          style: GoogleFonts.titilliumWeb(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        )),
+                      );
                     } else if (cal == "") {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('No calendar selected')),
-                        );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('No calendar selected',
+                          style: GoogleFonts.titilliumWeb(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        )),
+                      );
                     } else if (widget.selectedLocationIndex == -1) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('No location group selected')),
+                        SnackBar(content: Text('No location group selected',
+                          style: GoogleFonts.titilliumWeb(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        )),
                       );
                     } else {
                       final bool confirmed = await showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: const Text('Confirm Event'),
-                            content: const Text('Do you want to create this event?'),
+                            title: Text('Confirm Event Creation',
+                              style: GoogleFonts.titilliumWeb(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            content: Text('Do you want to create these events?',
+                              style: GoogleFonts.titilliumWeb(
+                                fontSize: 16,
+                              ),
+                            ),
                             actions: [
                               TextButton(
                                 onPressed: () {
                                   Navigator.of(context).pop(false); // User cancels
                                 },
-                                child: const Text('Cancel'),
+                                child: Text('Cancel',
+                                  style: GoogleFonts.titilliumWeb(
+                                    fontSize: 16,
+                                  ),
+                                ),
                               ),
                               TextButton(
                                 onPressed: () {
                                   Navigator.of(context).pop(true); // User confirms
                                 },
-                                child: const Text('Confirm'),
+                                child: Text('Confirm',
+                                  style: GoogleFonts.titilliumWeb(
+                                    fontSize: 16,
+                                  ),
+                                ),
                               ),
                             ],
                           );
@@ -192,7 +225,16 @@ class _LoginPageState extends State<LoginPage> {
                         }
                         endFunction() {
                           isUploading = false;
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Events uploaded')),);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Events uploaded',
+                                style: GoogleFonts.titilliumWeb(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              )
+                            ),
+                          );
                           setState(() {});
                         }
 
@@ -201,7 +243,12 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     }
                   },
-                  child: const Text('Create Events'),
+                  child: Text('Create Events',
+                    style: GoogleFonts.titilliumWeb(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -211,25 +258,28 @@ class _LoginPageState extends State<LoginPage> {
           Row(
             children: [
               //display currently selected calendar
-                Expanded(
-                  child: Center(
-                    child: Text( _cal.isNotEmpty ? "Current Calendar: $_cal" : "No calendar selected", 
-                      style: const TextStyle(
-                        fontSize: 16
-                      ), 
-                      textAlign: TextAlign.center,)
-                    )
-                ), 
-                //display currently selected event location group
-                Expanded(
-                  child: Center(
-                    child: Text((widget.selectedLocationIndex == -1) ? "No event location selected" : 
-                      "Current event location: ${widget.locations[widget.selectedLocationIndex]}", 
-                      style: const TextStyle(fontSize: 16),
-                      textAlign: TextAlign.center
-                    )
+              Expanded(
+                child: Center(
+                  child: Text( _cal.isNotEmpty ? "Current Calendar: $_cal" : "No calendar selected", 
+                    style: GoogleFonts.titilliumWeb(
+                      fontSize: 16
+                    ), 
+                    textAlign: TextAlign.center
                   )
                 )
+              ), 
+              //display currently selected event location group
+              Expanded(
+                child: Center(
+                  child: Text((widget.selectedLocationIndex == -1) ? "No event location selected" : 
+                    "Current event location: ${widget.locations[widget.selectedLocationIndex]}", 
+                    style: GoogleFonts.titilliumWeb(
+                      fontSize: 16
+                    ),
+                    textAlign: TextAlign.center
+                  )
+                )
+              )
             ]
           ),
           const SizedBox(height: 10),
@@ -244,7 +294,11 @@ class _LoginPageState extends State<LoginPage> {
                     return Card(
                       margin: const EdgeInsets.symmetric(vertical: 5),
                       child: ListTile(
-                        title: Text(_calList[index]),
+                        title: Text(_calList[index],
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 16,
+                          ),
+                        ),
                         onTap: () {
                           _prefs.setSelectedCal(_calList[index]);
                           _loadSettings();
@@ -263,7 +317,11 @@ class _LoginPageState extends State<LoginPage> {
                     return Card(
                       margin: const EdgeInsets.symmetric(vertical: 5),
                       child: ListTile(
-                        title: Text(widget.locations[index]),
+                        title: Text(widget.locations[index],
+                          style: GoogleFonts.titilliumWeb(
+                            fontSize: 16,
+                          ),
+                        ),
                         subtitle: (widget.descriptionSkipSet.contains(widget.locations[index])) ? null : Text(widget.locationEventLists[widget.locations[index]]!.map((element) => element.summary).join(", "), style: const TextStyle(fontSize: 10),),
                         onTap: () {
                           setState(() {
@@ -283,73 +341,127 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               Expanded(
                 child: Center(
-                  child: ElevatedButton(
+                  child: FilledButton(
                     onPressed: () {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           final TextEditingController controller = TextEditingController();
-                          return AlertDialog(
-                            title: const Text('Create New Calendar Set'),
-                            content: TextField(
-                              controller: controller,
-                              decoration: const InputDecoration(
-                                labelText: 'Enter calendar set name',
+                          bool isLoading = false;
+                          return StatefulBuilder(
+                            builder: (BuildContext context, StateSetter setState) {
+                            return AlertDialog(
+                              title: Text('Create New Calendar Set',
+                                style: GoogleFonts.titilliumWeb(
+                                  fontSize: 24,
+                                ),
                               ),
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(); // Close the dialog
-                                },
-                                child: const Text('Cancel'),
+                              content: TextField(
+                                controller: controller,
+                                decoration: const InputDecoration(
+                                  labelText: 'Enter calendar set name',
+                                ),
                               ),
-                              TextButton(
-                                onPressed: () async {
-                                  final String calendarSetName = controller.text.trim();
-                                  if (calendarSetName.isNotEmpty) {
-                                    if (_currentUser != null) {
-                                      await addCalendarToList(_currentUser!, calendarSetName);
-                                      
-                                      Navigator.of(context).pop();
-                                      
-                                      setState(() {
-                                        _loadSettings();
-                                      });
-                                    } else {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('No user signed in')),
-                                      );
-                                    }
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Calendar set name cannot be empty')),
-                                    );
-                                  }
-                                },
-                                child: const Text('Create'),
-                              )
-
-                            ],
+                              actions: [
+                                isLoading
+                                 ? const Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : Row(
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop(); // Close the dialog
+                                      },
+                                      child: Text('Cancel',
+                                        style: GoogleFonts.titilliumWeb(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        final String calendarSetName = controller.text.trim();
+                                        if (calendarSetName.isNotEmpty) {
+                                          if (_currentUser != null) {
+                                            setState(() {
+                                            isLoading = true; // Show loading indicator
+                                          });
+                                            await addCalendarToList(_currentUser!, calendarSetName);
+                                            
+                                            Navigator.of(context).pop();
+                                            
+                                            setState(() {
+                                              _loadSettings();
+                                            });
+                                          } else {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(content: Text('No user signed in',
+                                                style: GoogleFonts.titilliumWeb(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                ),
+                                              )),
+                                            );
+                                          }
+                                        } else {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text('Calendar set name cannot be empty',
+                                              style: GoogleFonts.titilliumWeb(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                              ),
+                                            )),
+                                          );
+                                        }
+                                      },
+                                      child: Text('Create',
+                                        style: GoogleFonts.titilliumWeb(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            );
+                            }
                           );
                         },
                       );
                     },
-                    child: const Text("Create new calendar set"),
+                    child: Text("Create new calendar set",
+                      style: GoogleFonts.titilliumWeb(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
                   )
                 ),
               ),
               Expanded(
                 child: Center(
-                  child: ElevatedButton(
+                  child: FilledButton(
                     onPressed: () async {
                       if (await canLaunchUrl(Uri.parse("http://calendar.google.com"))) {
                         await launchUrl(Uri.parse("https://calendar.google.com"));
                       } else {
-                        print("Error opening Google Calendar");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error opening Google Calendar',
+                          style: GoogleFonts.titilliumWeb(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        )),
+                      );
                       }
                     }, 
-                    child: const Text("Open Google Calendar")
+                    child: Text("Open Google Calendar",
+                      style: GoogleFonts.titilliumWeb(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
                 ),
               ),

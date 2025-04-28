@@ -35,10 +35,21 @@ import 'event_struct.dart';
         calendarIds.add(item.id!);
       }
 
-      _prefs.setUserCalendarSets(calendarIds,calendarSummaries);
+      // combine names and IDs into collection, making sure the names and IDs are in the same order
+      List<MapEntry<String, String>> combinedList = [];
+      for (int i = 0; i < calendarSummaries.length; i++) {
+        combinedList.add(MapEntry(calendarSummaries[i], calendarIds[i]));
+      }
 
-      // final calendarOut = await _prefs.getCalendarList();
-      // print('calendar type: ${calendarOut.runtimeType}');
+      // sort the lists alphabetically
+      combinedList.sort((a, b) => a.key.compareTo(b.key));
+
+      // back to lists
+      calendarSummaries = combinedList.map((entry) => entry.key).toList();
+      calendarIds = combinedList.map((entry) => entry.value).toList();
+
+      // save the sorted lists
+      _prefs.setUserCalendarSets(calendarIds,calendarSummaries);
 
       client.close();
     } catch (e) {
@@ -80,7 +91,6 @@ import 'event_struct.dart';
     );
 
     final calendar.CalendarApi calendarApi = calendar.CalendarApi(client);
-   // const String calendarId = 'c_27cf9ebd1940281735b50fe02d1e3cb2e722d537fe981b4304582abb27563bd1@group.calendar.google.com'; 
     await calendarApi.events.insert(event, calendarId);
 
     client.close();
@@ -127,7 +137,7 @@ import 'event_struct.dart';
 
        // await calendarApi.events.insert(event, calendarId);
         createEvent(currentUser, calendarId, val);
-        print('Event added: ${event.summary}');
+        //print('Event added: ${event.summary}');
 
         updateFunction(++eventCounter,events.length);
 
@@ -163,14 +173,30 @@ import 'event_struct.dart';
 
       final createdCalendar = await calendarApi.calendars.insert(newCalendar);
 
-      print('Created new calendar with ID: ${createdCalendar.id}');
+     // print('Created new calendar with ID: ${createdCalendar.id}');
     
-      
-      // Save the updated list back to SharedPreferences
+      // save the updated list back to SharedPreferences
       await _prefs.addCalendarSetToList(calendarName, createdCalendar.id!);
       
-      // Save the calendar ID for future reference
-      //await _prefs.setCalendarID(calendarName, createdCalendar.id!);
+      List<String> calendarNames = await _prefs.getCalendarListKey(); // retrieve the names list
+      List<String> calendarIds = await _prefs.getCalendarIDList(); // retrieve the IDs list
+
+      // combine names and IDs into collection, making sure the names and IDs are in the same order
+      List<MapEntry<String, String>> combinedList = [];
+      for (int i = 0; i < calendarNames.length; i++) {
+        combinedList.add(MapEntry(calendarNames[i], calendarIds[i]));
+      }
+
+      // sort the lists alphabetically
+      combinedList.sort((a, b) => a.key.compareTo(b.key));
+
+      // back to lists
+      calendarNames = combinedList.map((entry) => entry.key).toList();
+      calendarIds = combinedList.map((entry) => entry.value).toList();
+
+      // save the sorted lists
+      await _prefs.setUserCalendarSets(calendarIds, calendarNames);
+
 
       client.close();
     } catch (e) {

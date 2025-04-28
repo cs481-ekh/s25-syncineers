@@ -83,6 +83,13 @@ class SharedPreferencesManager {
    // return prefs.getStringList(calendarNameKey) ?? '';
   }
 
+  Future<List<String>> getCalendarIDList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    return prefs.getStringList(calendarIDKey) ?? [];
+   // return prefs.getStringList(calendarNameKey) ?? '';
+  }
+
   Future<String> getCalendarID(String calendarName) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 

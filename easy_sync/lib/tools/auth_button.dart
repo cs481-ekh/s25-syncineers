@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/calendar/v3.dart' as calendar;
 import 'package:googleapis_auth/googleapis_auth.dart' as auth;
@@ -83,18 +84,28 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
               subtitle: Text(_currentUser!.email),
             ),
           ),
-          ElevatedButton(
+          FilledButton(
             onPressed: _handleSignOut, //need to update shared prefs 
-            child: const Text('Sign Out'),
+            child: Text('Sign Out',
+              style: GoogleFonts.titilliumWeb(
+                color: Colors.white,
+                fontSize: 16,
+              )
+            )
           ),
         ],
       );
     } else {
-      return ElevatedButton(
+      return FilledButton(
         onPressed: (
           _handleSignIn
           ),
-        child: const Text('Sign in with Google'),
+        child: Text('Sign in with Google',
+          style: GoogleFonts.titilliumWeb(
+            color: Colors.white,
+            fontSize: 16,
+          )
+        )
       );
     }
   }

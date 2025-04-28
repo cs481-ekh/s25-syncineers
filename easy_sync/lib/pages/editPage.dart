@@ -3,6 +3,7 @@ import 'package:easy_sync/tools/dataset.dart';
 import 'package:easy_sync/tools/frame.dart';
 import 'package:easy_sync/tools/question_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class EditPage extends StatefulWidget {
   final Dataset table;
@@ -26,53 +27,67 @@ class _EditPageState extends State<EditPage> {
 
     return Frame(
       onNextPressed: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    LoginPage(widget.table.getEvents(widget.questions))));
+        if (questionIndex >= widget.questions.length) {
+          Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+              LoginPage(widget.table.getEvents(widget.questions)),
+          ),
+          );
+        } else {
+          // Do nothing or show a message if needed
+          ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Please complete all questions before proceeding."),
+          ),
+          );
+        }
       },
+      child: Padding(
+      padding: const EdgeInsets.all(8.0),
       child: Stack(
         children: [
-          (questionIndex >= widget.questions.length)
-            ? questionsComplete()
-            : askCurrentQuestion(),
-          Container(
-            alignment: Alignment.bottomRight,
-            child: IconButton(
-              onPressed: () {
-                showDialog(
-                  context: context, 
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      content: SizedBox(
-                        width: 800,
-                        child: Image.asset(
-                          "assets/Instruction2.png",
-                          fit: BoxFit.contain,
+        (questionIndex >= widget.questions.length)
+          ? questionsComplete()
+          : askCurrentQuestion(),
+            Container(
+              alignment: Alignment.bottomRight,
+              child: IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context, 
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: SizedBox(
+                          width: 800,
+                          child: Image.asset(
+                            "assets/Instruction2.png",
+                            fit: BoxFit.contain,
+                          ),
                         ),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: Navigator.of(context).pop, 
-                          child: const Text(
-                            "Close",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 35,
-                              fontFamily: 'Helvetica'
-                            ),
+                        actions: [
+                          TextButton(
+                            onPressed: Navigator.of(context).pop, 
+                            child: const Text(
+                              "Close",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 35,
+                                fontFamily: 'Helvetica'
+                              ),
+                            )
                           )
-                        )
-                      ],
-                    );
-                  }
-                );
-              }, 
-              icon: const Icon(Icons.info)
-            ),
-          )
-        ]
+                        ],
+                      );
+                    }
+                  );
+                }, 
+                icon: const Icon(Icons.info)
+              ),
+            )
+          ]
+        ),
       )
     );
   }
@@ -92,9 +107,17 @@ class _EditPageState extends State<EditPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            previousQuestion(),
-            const SizedBox(width: 75,),
-            nextQuestion(),
+            Expanded(
+              child: Center(
+                child: previousQuestion(),
+              ),
+            ),
+            // const SizedBox(width: 75,),
+            Expanded(
+              child: Center(
+                child: nextQuestion(),
+              ),
+            )
           ],
         ),
       ],
@@ -109,7 +132,13 @@ class _EditPageState extends State<EditPage> {
               questionIndex++;
             });
           },
-          child: const Text("Next question")//),
+          child: Text(
+            "Next question",
+            style: GoogleFonts.titilliumWeb(
+              color: Colors.white,
+              fontSize: 16,
+            ),
+          )//),
     );
   }
 
@@ -121,37 +150,74 @@ class _EditPageState extends State<EditPage> {
               questionIndex--;
             });
           },
-          child: const Text("Previous question") //),
+          child: Text(
+            "Previous question",
+            style: GoogleFonts.titilliumWeb(
+              color: Colors.white,
+              fontSize: 16,
+            ),
+          )//),
     );
   }
 
   Column questionsComplete() {
     return Column(
       children: [
+        const Spacer(flex: 1),
+        Text("If you wish to change you answers, use the buttons below.",
+          style: GoogleFonts.titilliumWeb(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          )
+        ),
+        const SizedBox(
+          height: 50,
+        ),
         Row(
           children: [
             Expanded(
-              child: FilledButton(
-                  onPressed: () {
-                    setState(() {
-                      questionIndex = 0;
-                    });
-                  },
-                  child: const Text("First question")),
+              child: Center(
+                child: FilledButton(
+                    onPressed: () {
+                      setState(() {
+                        questionIndex = 0;
+                      });
+                    },
+                    child: Text("First question",
+                        style: GoogleFonts.titilliumWeb(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ))),
+              ),
             ),
             Expanded(
-              child: FilledButton(
-                  onPressed: () {
-                    setState(() {
-                      questionIndex = widget.questions.length - 1;
-                    });
-                  },
-                  child: const Text("Previous question")),
+              child: Center(
+                child: FilledButton(
+                    onPressed: () {
+                      setState(() {
+                        questionIndex = widget.questions.length - 1;
+                      });
+                    },
+                    child: Text("Previous question",
+                        style: GoogleFonts.titilliumWeb(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ))),
+              ),
             ),
           ],
         ),
-        const Expanded(
-            child: Text("That was the last question. You can move on to the next page.")),
+        const SizedBox(
+          height: 50,
+        ),
+        Expanded(
+          child: Text("That was the last question. You can move on to the next page.",
+            style: GoogleFonts.titilliumWeb(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            )
+          )
+        ),
       ],
     );
   }
