@@ -59,7 +59,6 @@ class _InputPageState extends State<InputPage> {
     List<List<dynamic>> csvData = const CsvToListConverter().convert(fileContents);
     List<List<String>> rows = csvData.map((row) => row.map((e) => e.toString()).toList()).toList();
     columnNames = rows[0];
-    print("\n$columnNames");
     return rows;
   }
 
@@ -95,7 +94,6 @@ class _InputPageState extends State<InputPage> {
       }).toList();
     }).toList(); 
     columnNames = rows[0];
-    print("\n$columnNames");
     return rows;
   } 
 
@@ -176,7 +174,6 @@ class _InputPageState extends State<InputPage> {
                               setState(() {
                                 useDefaults = value!;
                               });
-                              print("Use defaults: $useDefaults");
                             }
                           ),
                           const Text("Use defaults")

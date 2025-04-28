@@ -8,16 +8,13 @@ class SharedPreferencesManager {
   String idKey = 'id';
   String photoUrlKey = 'photoUrl';
   String serverAuthCodeKey = 'serverAuthCode';
-
-  //late List<String> calendarListKey;
-
   String calendarNameKey = 'calendarList';
   String calendarIDKey = 'calendarID';
-
   String selectedCalKey = 'selectedCal';
 
   //WRITE TO PREFERENCES
 
+  // sets user values in SharedPreferences
   Future<void> setUser(data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(displayNameKey, data.displayName ?? '');
@@ -27,6 +24,7 @@ class SharedPreferencesManager {
     prefs.setString(serverAuthCodeKey, data.serverAuthCode ?? '');
   }
 
+  // clears user values from SharedPreferences
   Future<void> clearUser() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove(displayNameKey);
@@ -39,7 +37,8 @@ class SharedPreferencesManager {
     prefs.remove(selectedCalKey);
   }
 
-    Future<Map<String, String>> getUserValues() async {
+  // returns user values from SharedPreferences
+  Future<Map<String, String>> getUserValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return {
       'displayName': prefs.getString(displayNameKey) ?? '',
@@ -50,19 +49,15 @@ class SharedPreferencesManager {
     };
   }
 
-  //maybe change to a map? for claendar set summary and id
+  // updates calendar list and ID's in SharedPreferences
   Future<void> setUserCalendarSets(ids, title) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    // print("DATA: $data");
-    // print("TYPE: ${data.runtimeType}");
-
     prefs.setStringList(calendarIDKey, ids);
     prefs.setStringList(calendarNameKey, title);
-
-   // print("KEY PRINT: $calendarListKey");
   }
 
+  // set selected calendar by the user
   Future<void> setSelectedCal(data) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(selectedCalKey, data);
@@ -80,16 +75,16 @@ class SharedPreferencesManager {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     return prefs.getStringList(calendarNameKey) ?? [];
-   // return prefs.getStringList(calendarNameKey) ?? '';
   }
 
+  //returns calendar ID list
   Future<List<String>> getCalendarIDList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     return prefs.getStringList(calendarIDKey) ?? [];
-   // return prefs.getStringList(calendarNameKey) ?? '';
   }
 
+  //returns calendar ID for a given calendar name
   Future<String> getCalendarID(String calendarName) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -104,11 +99,13 @@ class SharedPreferencesManager {
     }
   }
 
+  // returns calendar name selected by the user
   Future<String> getSelectedCal() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(selectedCalKey) ?? '';
   }
 
+  // adds a new calendar to the list of calendars in SharedPreferences
   addCalendarSetToList(String calendarName, String calendarID) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
