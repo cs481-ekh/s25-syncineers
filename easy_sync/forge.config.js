@@ -5,6 +5,7 @@ const { exec } = require('child_process');
 module.exports = {
   packagerConfig: {
     asar: true,
+    icon: 'web/logo.ico',
     extraResource: [
         'build/web'
     ],
