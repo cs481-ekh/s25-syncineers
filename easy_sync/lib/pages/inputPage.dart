@@ -191,6 +191,7 @@ class _InputPageState extends State<InputPage> {
           Container(
             alignment: Alignment.bottomRight,
             child: IconButton(
+              iconSize: 32,
               onPressed: () {
                 showDialog(
                   context: context, 
@@ -199,7 +200,7 @@ class _InputPageState extends State<InputPage> {
                       content: SizedBox(
                         width: 800,
                         child: Image.asset(
-                          "assets/Instruction1.png",
+                          "assets/inputInstruction.png",
                           fit: BoxFit.contain,
                         ),
                       ),

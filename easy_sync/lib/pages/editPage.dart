@@ -54,6 +54,7 @@ class _EditPageState extends State<EditPage> {
             Container(
               alignment: Alignment.bottomRight,
               child: IconButton(
+                iconSize: 32,
                 onPressed: () {
                   showDialog(
                     context: context, 
@@ -62,7 +63,7 @@ class _EditPageState extends State<EditPage> {
                         content: SizedBox(
                           width: 800,
                           child: Image.asset(
-                            "assets/Instruction2.png",
+                            "assets/editInstruction.png",
                             fit: BoxFit.contain,
                           ),
                         ),
