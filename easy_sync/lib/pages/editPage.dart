@@ -107,9 +107,17 @@ class _EditPageState extends State<EditPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            previousQuestion(),
-            const SizedBox(width: 75,),
-            nextQuestion(),
+            Expanded(
+              child: Center(
+                child: previousQuestion(),
+              ),
+            ),
+            // const SizedBox(width: 75,),
+            Expanded(
+              child: Center(
+                child: nextQuestion(),
+              ),
+            )
           ],
         ),
       ],

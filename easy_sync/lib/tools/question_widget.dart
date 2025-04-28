@@ -122,26 +122,25 @@ class QuestionWidget extends StatelessWidget {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Text(
-              "Example output: ",
-              style: GoogleFonts.titilliumWeb(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+        child: RichText(
+          text: TextSpan(
+            style: GoogleFonts.titilliumWeb(
+              color: Colors.black,
+              fontSize: 16,
             ),
-            Text(
-              example,
-              style: GoogleFonts.titilliumWeb(
-                color: Colors.black,
-                fontSize: 16,
+            children: [
+              const TextSpan(
+                text: "Example output: ",
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-            ),
-          ],
-        )
-      )
+              TextSpan(
+                text: example,
+              ),
+            ],
+          ),
+          overflow: TextOverflow.ellipsis, 
+        ),
+      ),
     );
   }
 
