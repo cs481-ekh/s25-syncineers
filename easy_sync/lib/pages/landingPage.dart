@@ -59,6 +59,13 @@ class LandingPage extends StatelessWidget {
                 fontSize: 16,
               ),
             ),
+            Text(
+              "For a video tutorial please see the \"Help\" tab above.",
+              style: GoogleFonts.titilliumWeb(
+                color: Colors.black,
+                fontSize: 16,
+              ),
+            ),
             const SizedBox(height: 12,),
             Tooltip(
               message: "This website was created for a\n"
@@ -68,12 +75,21 @@ class LandingPage extends StatelessWidget {
                       "Ethan Barnes\n" 
                       "Tyler Pierce\n" 
                       "For information about sponsoring a project go to\n" 
-                      "https://www.boisestate.edu/coen-cs/community/cs481-senior-design-project",
+                      "https://www.boisestate.edu/coen-cs/community/cs481-senior-design-project\n"
+                      "Link found in the Help tab",
               child: Image.asset(
                 "assets/sdp-logo.png",
                 width: 100,
               ),
-            )
+            ),
+            const SizedBox(height: 12),
+            Text(
+              "Hover over the image above for more information about the project and BSU SDP",
+              style: GoogleFonts.titilliumWeb(
+                color: Colors.black,
+                fontSize: 14,
+              ),
+            ),
           ],
         ),
       ),

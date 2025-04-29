@@ -4,12 +4,12 @@
   "main": "main.js",
   "scripts": {
     "clean": "flutter clean",
-    "build": "flutter build web",
+    "build": " flutter build web",
     "full-build": "npm run build && concurrently -k -s first -n SERVER,ELECTRON \"npm run serve\" \"npm run electron\"",
     "serve": "npx http-server ./build/web -p 7357 -c-1",
     "electron": "npx wait-on http://localhost:7357 && electron .",
     "package": "electron-forge package",
-    "make": "electron-forge make --verbose --config forge.config.js",
+    "make": "npm run build && electron-forge make --verbose --config forge.config.js",
     "start": "electron-forge start",
     "dist": "npm run build && electron-forge make --verbose"
   },

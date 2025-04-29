@@ -9,7 +9,7 @@ BSU CS481 Capstone project
 The easy Google Calendar integration tool
 
 ## Downloading the Latest Release
-The latest release can be downloaded [here](https://drive.google.com/file/d/1xp9CS9LQLkNKdh8HJu6fRZwWEaRjbJvU/view?usp=sharing) (ZIP, 164.3 MB)
+The latest release can be downloaded [here](https://drive.google.com/file/d/1GWrHxTuBclR1Tc-4sNjaj1Zrd75z16NU/view?usp=sharing) (ZIP, 164.3 MB)
 
 Simply download the zip file, extract it to a file location of you choice, then click on the executable named easy-sync.exe to run the program
 
@@ -36,9 +36,9 @@ To verify if flutter is installed use the following command: `flutter doctor` Th
 ### Running in Electron for Deployment
 To package a new executable with electron first make sure that both NodeJS and NPM are installed (see section Installing and Running)
 
-First, navigate to the easy_sync directory with the following command: `cd easy_sync`
+Firstly, navigate to the easy_sync directory with the following command: `cd easy_sync`
 
-Now to install the necessary npm dependencies use the following command: `npm install` 
+Then install the necessary npm dependencies use the following command: `npm install` 
 This will create a directory named node_modules with all the necessary dependencies
 
 To create a new executable using electron run the following commands:
@@ -64,13 +64,16 @@ To run the application within electron for testing purposes first make sure that
 First, navigate to the easy_sync directory with the following command:
 `cd easy_sync`
 
+Now to install the necessary npm dependencies use the following command:
+
+`npm install` this will create a directory named node_modules 
+
 Then run the following command:
 
 `npm run clean` This will ensure there isn't a previous build that could cause a conflict
 
-Now to install the necessary npm dependencies use the following command:
-
-`npm install` this will create a directory named node_modules 
+And the following command: 
+`npm run build`
 
 To run the electron application use the following command:
 
