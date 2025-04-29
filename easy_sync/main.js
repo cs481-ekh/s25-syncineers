@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, Menu } = require('electron');
 const path = require('path');
 const http = require('http');
 const finalhandler = require('finalhandler');
@@ -6,26 +6,21 @@ const serveStatic = require('serve-static');
 const portfinder = require('portfinder');
 const fs = require('fs');
 
-// Check if we're in development or production
+const menuTemplate = require('./menu.js'); // import menu template
+
 const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged;
 
-// Global references
 let mainWindow = null;
 let httpServer = null;
 const PORT = 7357;
 
-// Start the server with the Flutter web build
 async function startLocalServer() {
   try {
-    // Determine the correct path to the web build
     let webBuildPath;
     
     if (isDev) {
-      // In development, use the build/web directory
       webBuildPath = path.join(__dirname, 'build', 'web');
     } else {
-      // In production, the build/web folder should be part of the app resources
-      // Check a few possible locations
       const possiblePaths = [
         path.join(__dirname, 'build', 'web'),
         path.join(process.resourcesPath, 'build', 'web'),
@@ -42,15 +37,14 @@ async function startLocalServer() {
     
     console.log(`Using web build at: ${webBuildPath}`);
     
-    // Check that index.html exists
     if (!fs.existsSync(path.join(webBuildPath, 'index.html'))) {
       throw new Error('index.html not found in web build directory');
     }
     
-    // Configure the static file server
+    // configure the static file server
     const serve = serveStatic(webBuildPath);
     
-    // Try to use the preferred port or find an available one
+    // use specified port
     portfinder.basePort = PORT;
     const port = await portfinder.getPortPromise();
     
@@ -59,7 +53,6 @@ async function startLocalServer() {
       serve(req, res, finalhandler(req, res));
     });
     
-    // Start the server
     return new Promise((resolve, reject) => {
       httpServer.listen(port, '127.0.0.1', (err) => {
         if (err) {
@@ -83,10 +76,9 @@ async function startLocalServer() {
 // Create the main application window
 async function createWindow() {
   try {
-    // Start local server first
+    // start local server 
     const port = await startLocalServer();
     
-    // Create the browser window
     mainWindow = new BrowserWindow({
       width: 1000,
       height: 800,
@@ -95,26 +87,24 @@ async function createWindow() {
         nodeIntegration: false,
         contextIsolation: true
       },
-      show: false // Don't show until loaded
+      show: false 
     });
     
-    // Load the app
+    // load the app
     const url = `http://localhost:${port}`;
     console.log(`Loading application from: ${url}`);
     
     mainWindow.loadURL(url);
     
-    // Show window when ready
     mainWindow.once('ready-to-show', () => {
       mainWindow.show();
     });
     
-    // Open DevTools in development
+    // Open DevTools if in development
     if (isDev) {
       mainWindow.webContents.openDevTools();
     }
     
-    // Handle window closed event
     mainWindow.on('closed', () => {
       mainWindow = null;
     });
@@ -127,6 +117,10 @@ async function createWindow() {
 // App ready event
 app.whenReady().then(() => {
   createWindow();
+
+  // set custom application menu
+  const menu = Menu.buildFromTemplate(menuTemplate);
+  Menu.setApplicationMenu(menu);
   
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -135,14 +129,13 @@ app.whenReady().then(() => {
   });
 });
 
-// Quit when all windows are closed
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
-// Cleanup on app quit
+// cleanup
 app.on('quit', () => {
   if (httpServer) {
     httpServer.close();
@@ -150,7 +143,6 @@ app.on('quit', () => {
   }
 });
 
-// Handle unhandled errors
 process.on('uncaughtException', (error) => {
   console.error('Uncaught Exception:', error);
 });
