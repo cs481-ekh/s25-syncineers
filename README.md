@@ -3,12 +3,18 @@
 
 # Easy Sync
 BSU CS481 Capstone project
+![](easy_sync/assets/logo.png)
+The easy Google Calendar integration tool
+
+## Downloading the Latest Release
+The latest release can be downloaded [here](https://drive.google.com/file/d/1xp9CS9LQLkNKdh8HJu6fRZwWEaRjbJvU/view?usp=sharing) (ZIP, 164.3 MB)
 
 
 ### Installing and Running
 In the sections below you will find steps to running the project in several different ways
 
 To run the project in electron you first must install NodeJS and NPM which both can be installed through the link [here](https://nodejs.org/en/)
+Flutter will also be needed to run the project, which can be downloaded from the link [here](https://docs.flutter.dev/get-started/install)
 
 #### Running in Electron for Deployment
 To package a new executable with electron first make sure that both NodeJS and NPM are installed (see section Installing and Running)
@@ -27,6 +33,7 @@ After a short wait the executable can be found in the following directories:
 or
 `s25-syncineers/easy_sync/out/make/squirrel.windows/x64/electron-easysync-1.0.0 Setup.exe`
 
+
 #### Running in Electron for Development
 To run the application within electron for testing purposes first make sure that both NodeJS and NPM are installed (see section Installing and Running)
 
@@ -40,6 +47,7 @@ To run the electron application use the following command:
 `npm run full-build` this will run a script outlined in package.json and run the application
 
 Developer tools are automatically on, if you wish to turn the feature off comment out lines 112-114 in main.js located in the easy_sync directory
+
 
 #### Running Directly in Flutter
 After cloning the repository to your machine run the build script to load the flutter files with the following command:
