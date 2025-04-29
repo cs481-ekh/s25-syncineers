@@ -2,7 +2,7 @@
 
 
 # Easy Sync
-![](easy_sync/assets/logo_smaller.png)
+![](easy_sync/assets/logo_smaller.png)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![](easy_sync/assets/sdp-logo-smaller.png)
 
 BSU CS481 Capstone project
 
