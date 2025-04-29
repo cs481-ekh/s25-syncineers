@@ -13,7 +13,15 @@ The latest release can be downloaded [here](https://drive.google.com/file/d/1xp9
 
 Simply download the zip file, extract it to a file location of you choice, then click on the executable named easy-sync.exe to run the program
 
-If desired, a desktop shortcut can be created for the executable file by right clicking on it and selecting the 'Create Shortcut' option
+If desired, a desktop shortcut can be created for the executable file by right clicking on it and selecting the 'Create Shortcut' option. 
+
+If you attempt to move the application outside of its folder instead of creating a shortcut, it will NOT work. 
+
+## Video Tutorials
+
+[Installing the application](https://youtu.be/c03i51kDTu4)
+
+[Using the application](https://youtu.be/UFgxs4ubuXQ)
 
 ## Installing and Running
 
