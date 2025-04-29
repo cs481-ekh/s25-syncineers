@@ -63,7 +63,7 @@ class _EditPageState extends State<EditPage> {
                         content: SizedBox(
                           width: 800,
                           child: Image.asset(
-                            "assets/editInstruction.png",
+                            "assets/editinstruction.png",
                             fit: BoxFit.contain,
                           ),
                         ),

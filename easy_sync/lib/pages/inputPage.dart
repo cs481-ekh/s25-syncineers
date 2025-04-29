@@ -9,6 +9,7 @@ import 'package:easy_sync/tools/dataset.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class InputPage extends StatefulWidget {
   late Dataset table;
@@ -149,6 +150,13 @@ class _InputPageState extends State<InputPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                 Text(
+                  'Upload your file with the button below',
+                  style: GoogleFonts.titilliumWeb(
+                    fontSize: 24,
+                  ),
+                ),
+
                 if (fileName != null) const SizedBox(height: 50,),
                 IconButton(
                   onPressed: getFile, 
@@ -163,6 +171,9 @@ class _InputPageState extends State<InputPage> {
                       Text(
                         'File uploaded: $fileName',
                         textAlign: TextAlign.center,
+                        style: GoogleFonts.titilliumWeb(
+                        fontSize: 16,
+                      ),
                       ),
                       const SizedBox(height: 35,),
                       Row(
@@ -176,7 +187,12 @@ class _InputPageState extends State<InputPage> {
                               });
                             }
                           ),
-                          const Text("Use defaults")
+                          Text(
+                            "Use defaults",
+                            style: GoogleFonts.titilliumWeb(
+                            fontSize: 16,
+                            ),
+                          )
                         ],
                       ),
                     ],

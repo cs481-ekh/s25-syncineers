@@ -86,9 +86,21 @@ const template = [
     label: 'Help',
     submenu: [
       {
-        label: 'Learn More',
+        label: 'Video Tutorial',
+        click: async () => {
+          await shell.openExternal('https://youtu.be/UFgxs4ubuXQ');
+        }
+      },
+      {
+        label: 'Project Website',
         click: async () => {
           await shell.openExternal('https://cs481-ekh.github.io/s25-syncineers/');
+        }
+      },
+      {
+        label: 'Sponsoring a Project',
+        click: async () => {
+          await shell.openExternal('https://www.boisestate.edu/coen-cs/community/cs481-senior-design-project');
         }
       }
     ]
