@@ -56,21 +56,21 @@ import 'event_struct.dart';
     }
   }
 
-  void createEvent(GoogleSignInAccount currentUser, String calendarId, EventStruct details) async {
+  void createEvent(calendar.CalendarApi calendarApi, String calendarId, EventStruct details) async {
    try {
 
-      final GoogleSignInAuthentication googleAuth = await currentUser.authentication;
+      // final GoogleSignInAuthentication googleAuth = await currentUser.authentication;
 
-      final auth.AccessCredentials credentials = auth.AccessCredentials(
-        auth.AccessToken("Bearer", googleAuth.accessToken!, DateTime.now().toUtc()),
-        googleAuth.idToken,
-        ['https://www.googleapis.com/auth/calendar'],
-      );
+      // final auth.AccessCredentials credentials = auth.AccessCredentials(
+      //   auth.AccessToken("Bearer", googleAuth.accessToken!, DateTime.now().toUtc().add(const Duration(minutes: 30))), //DateTime.now().toUtc()),
+      //   googleAuth.idToken,
+      //   ['https://www.googleapis.com/auth/calendar'],
+      // );
 
-      final auth.AuthClient client = auth.authenticatedClient(
-        http.Client(),
-        credentials,
-      );
+      // final auth.AuthClient client = auth.authenticatedClient(
+      //   http.Client(),
+      //   credentials,
+      // );
 
       final calendar.Event event = calendar.Event(
       summary: details.summary,
@@ -87,10 +87,10 @@ import 'event_struct.dart';
       recurrence: details.recurrenceRules,
     );
 
-    final calendar.CalendarApi calendarApi = calendar.CalendarApi(client);
+   // final calendar.CalendarApi calendarApi = calendar.CalendarApi(client);
     await calendarApi.events.insert(event, calendarId);
 
-    client.close();
+    // client.close();
     } catch (e) {
       print('Failed to create event: $e event:$details');
     }
@@ -103,7 +103,7 @@ import 'event_struct.dart';
       final GoogleSignInAuthentication googleAuth = await currentUser.authentication;
 
       final auth.AccessCredentials credentials = auth.AccessCredentials(
-        auth.AccessToken("Bearer", googleAuth.accessToken!, DateTime.now().toUtc()),
+        auth.AccessToken("Bearer", googleAuth.accessToken!, DateTime.now().toUtc().add(const Duration(minutes: 30))), //DateTime.now().toUtc()),
         googleAuth.idToken,
         ['https://www.googleapis.com/auth/calendar'],
       );
@@ -132,7 +132,7 @@ import 'event_struct.dart';
           recurrence: val.recurrenceRules,
         );
 
-        createEvent(currentUser, calendarId, val);
+        createEvent(calendarApi, calendarId, val);
 
         updateFunction(++eventCounter,events.length);
 

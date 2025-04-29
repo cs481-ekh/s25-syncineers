@@ -105,19 +105,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    if ((isUploading)) {
-      return Stack(children: [
-        loginMainPage(context),
-        const ModalBarrier(dismissible: false,),
-        Container(color: const Color.fromARGB(67, 67, 67, 67),),
-        Center(child: CircularProgressIndicator(value: uploadPercentage))
-      ],);
-    } else {
-      return loginMainPage(context);
-    }
-  }
-
-  Frame loginMainPage(BuildContext context) {
     return Frame(
     nextColor: Colors.grey,
     child: Padding(
@@ -133,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                   Expanded(
                   child: Center(
                     child: FilledButton(
-                      onPressed: () async {
+                      onPressed: isUploading ? null : () async {
                         final cal = await _prefs.getSelectedCal();
           
                         if (!context.mounted) {
@@ -239,12 +226,21 @@ class _LoginPageState extends State<LoginPage> {
                           }
                         }
                       },
-                      child: Text('Create Events',
-                        style: GoogleFonts.titilliumWeb(
-                          color: Colors.white,
-                          fontSize: 16,
+                      child: isUploading
+                        ? SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              value: uploadPercentage,
+                              strokeWidth: 3,
+                            ),
+                          )
+                        : Text('Create Events',
+                            style: GoogleFonts.titilliumWeb(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
                         ),
-                      ),
                     ),
                   ),
                 ),
